@@ -18,16 +18,16 @@ SW[6] => ulasomasub:ULA1.entradaB[0]
 SW[7] => ulasomasub:ULA1.entradaB[1]
 SW[8] => ulasomasub:ULA1.entradaB[2]
 SW[9] => ulasomasub:ULA1.entradaB[3]
-LEDR[0] << registradorgenerico:REG1.DOUT[0]
-LEDR[1] << registradorgenerico:REG1.DOUT[1]
-LEDR[2] << registradorgenerico:REG1.DOUT[2]
-LEDR[3] << registradorgenerico:REG1.DOUT[3]
-LEDR[4] << <GND>
-LEDR[5] << <GND>
-LEDR[6] << SW[4].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[7] << KEY[1].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[8] << KEY[2].DB_MAX_OUTPUT_PORT_TYPE
-LEDR[9] << SW[5].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[0] <= registradorgenerico:REG1.DOUT[0]
+LEDR[1] <= registradorgenerico:REG1.DOUT[1]
+LEDR[2] <= registradorgenerico:REG1.DOUT[2]
+LEDR[3] <= registradorgenerico:REG1.DOUT[3]
+LEDR[4] <= <GND>
+LEDR[5] <= <GND>
+LEDR[6] <= SW[4].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[7] <= KEY[1].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[8] <= KEY[2].DB_MAX_OUTPUT_PORT_TYPE
+LEDR[9] <= SW[5].DB_MAX_OUTPUT_PORT_TYPE
 
 
 |Aula1|muxGenerico2x1:MUX1

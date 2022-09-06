@@ -1,0 +1,75 @@
+# do Atv2.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Errors: 0, Warnings: 1
+# Questa Intel Starter FPGA Edition-64 vcom 2021.2 Compiler 2021.04 Apr 14 2021
+# Start time: 13:58:48 on Aug 26,2022
+# vcom -work work Atv2.vho 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Loading package VITAL_Timing
+# -- Loading package VITAL_Primitives
+# -- Loading package dffeas_pack
+# -- Loading package altera_primitives_components
+# -- Loading package altera_lnsim_components
+# -- Loading package cyclonev_atom_pack
+# -- Loading package cyclonev_components
+# -- Compiling entity Atv2
+# -- Compiling architecture structure of Atv2
+# End time: 13:58:49 on Aug 26,2022, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0
+# Questa Intel Starter FPGA Edition-64 vcom 2021.2 Compiler 2021.04 Apr 14 2021
+# Start time: 13:58:49 on Aug 26,2022
+# vcom -work work Waveform1.vwf.vht 
+# -- Loading package STANDARD
+# -- Loading package TEXTIO
+# -- Loading package std_logic_1164
+# -- Compiling entity Atv2_vhd_vec_tst
+# -- Compiling architecture Atv2_arch of Atv2_vhd_vec_tst
+# End time: 13:58:49 on Aug 26,2022, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# vsim -voptargs="+acc" -c -t 1ps -L cyclonev -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim work.Atv2_vhd_vec_tst 
+# Start time: 13:58:49 on Aug 26,2022
+# ** Note: (vsim-3813) Design is being optimized due to module recompilation...
+# //  Questa Intel Starter FPGA Edition-64
+# //  Version 2021.2 win64 Apr 14 2021
+# //
+# //  Copyright 1991-2021 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  QuestaSim and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading std.standard
+# Loading std.textio(body)
+# Loading ieee.std_logic_1164(body)
+# Loading work.atv2_vhd_vec_tst(atv2_arch)#1
+# Loading ieee.vital_timing(body)
+# Loading ieee.vital_primitives(body)
+# Loading altera.dffeas_pack
+# Loading altera.altera_primitives_components
+# Loading altera_lnsim.altera_lnsim_components
+# Loading cyclonev.cyclonev_atom_pack(body)
+# Loading cyclonev.cyclonev_components
+# Loading work.atv2(structure)#1
+# Loading ieee.std_logic_arith(body)
+# Loading cyclonev.cyclonev_io_obuf(arch)#1
+# Loading cyclonev.cyclonev_io_ibuf(arch)#1
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#1
+# Loading altera.dffeas(vital_dffeas)#1
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#2
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#3
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#4
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#5
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#6
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#7
+# Loading cyclonev.cyclonev_lcell_comb(vital_lcell_comb)#8
+# Loading altera.dffeas(vital_dffeas)#2
+# after#35
+# End time: 13:58:50 on Aug 26,2022, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

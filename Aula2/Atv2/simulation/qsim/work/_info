@@ -1,0 +1,122 @@
+m255
+K4
+z2
+Z0 !s99 nomlopt
+R0
+R0
+R0
+R0
+!s11e vcom 2021.2 2021.04, Apr 14 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 dC:/Users/paulochade/Insper/descomp/Aula2/Atv2/simulation/qsim
+T_opt
+Z2 !s110 1661533129
+VJE7QB>IoGz8?J^GY7[@SQ0
+04 16 9 work atv2_vhd_vec_tst atv2_arch 1
+=1-001c42838461-6308fbc9-1c4-328
+!s124 OEM10U2 
+o-quiet -auto_acc_if_foreign -work work -L cyclonev -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim +acc
+tCvgOpt 0
+n@_opt
+OL;O;2021.2;73
+Eatv2
+Z3 w1661533127
+Z4 DPx8 cyclonev 18 cyclonev_atom_pack 0 22 Go?7O^>gO9PUGAbd]57Qz3
+Z5 DPx8 cyclonev 19 cyclonev_components 0 22 KJiN=<?XEUbkUE2[idYZK3
+Z6 DPx12 altera_lnsim 23 altera_lnsim_components 0 22 kfhVHUgSbAm[03BJI^Zk12
+Z7 DPx4 ieee 16 vital_primitives 0 22 G>kiXP8Q9dRClKfK1Zn7j1
+Z8 DPx6 altera 11 dffeas_pack 0 22 ?LXJY1:Lo@gFD7X:NR80G0
+Z9 DPx4 ieee 12 vital_timing 0 22 J>EBealN09f8GzldA[z2>3
+Z10 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z11 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+Z12 DPx6 altera 28 altera_primitives_components 0 22 YYoQ82]HzeJG>EHgnbGN33
+!i122 8
+R1
+Z13 8Atv2.vho
+Z14 FAtv2.vho
+l0
+L39 1
+Vfd;TOK]RRjbCPG8b8aJ9M1
+!s100 [KSaIQUQFilji>1=b?Nf83
+Z15 OL;C;2021.2;73
+32
+R2
+!i10b 1
+Z16 !s108 1661533128.000000
+Z17 !s90 -work|work|Atv2.vho|
+Z18 !s107 Atv2.vho|
+!i113 0
+Z19 o-work work
+Z20 tExplicit 1 CvgOpt 0
+Astructure
+R4
+R5
+R6
+R7
+R8
+R9
+R10
+R11
+R12
+DEx4 work 4 atv2 0 22 fd;TOK]RRjbCPG8b8aJ9M1
+!i122 8
+l117
+L49 713
+V]Q?3mf>blb_o>7?GG?FLO1
+!s100 N0a:@Uj[W3Ki>`2zl1kAO2
+R15
+32
+R2
+!i10b 1
+R16
+R17
+R18
+!i113 0
+R19
+R20
+Eatv2_vhd_vec_tst
+Z21 w1661533126
+R10
+R11
+!i122 9
+R1
+Z22 8Waveform1.vwf.vht
+Z23 FWaveform1.vwf.vht
+l0
+L32 1
+VT_Vl5NA>_Z0Y9P9gHAh<`2
+!s100 AgDKUlNNJ^@?XJidJNI>f0
+R15
+32
+R2
+!i10b 1
+Z24 !s108 1661533129.000000
+Z25 !s90 -work|work|Waveform1.vwf.vht|
+Z26 !s107 Waveform1.vwf.vht|
+!i113 0
+R19
+R20
+Aatv2_arch
+R10
+R11
+DEx4 work 16 atv2_vhd_vec_tst 0 22 T_Vl5NA>_Z0Y9P9gHAh<`2
+!i122 9
+l51
+L34 78
+V<U<JZPbKLRZDcni;MA;6k2
+!s100 >A0LZ99TRY4d_f6h[K>IB0
+R15
+32
+R2
+!i10b 1
+R24
+R25
+R26
+!i113 0
+R19
+R20

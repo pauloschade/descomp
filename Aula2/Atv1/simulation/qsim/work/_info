@@ -1,0 +1,133 @@
+m255
+K4
+z2
+Z0 !s99 nomlopt
+R0
+R0
+R0
+R0
+R0
+R0
+R0
+R0
+!s11e vcom 2021.2 2021.04, Apr 14 2021
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 dC:/Users/paulochade/Insper/descomp/Aula2/Atv1/simulation/qsim
+T_opt
+!s110 1661523229
+VzYDU3aWmzmk0i6i^ez]222
+Z2 04 16 9 work atv1_vhd_vec_tst atv1_arch 1
+=1-001c42838461-6308d51c-270-150c
+Z3 !s124 OEM10U2 
+o-quiet -auto_acc_if_foreign -work work -L cyclonev -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim
+Z4 tCvgOpt 0
+n@_opt
+Z5 OL;O;2021.2;73
+R1
+T_opt1
+!s110 1661523603
+Vd^2zeP:EH_?G0NnmY]^EA3
+R2
+=1-001c42838461-6308d692-306-2358
+R3
+o-quiet -auto_acc_if_foreign -work work -L cyclonev -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim +acc
+R4
+n@_opt1
+R5
+Eatv1
+Z6 w1661523601
+Z7 DPx4 ieee 16 vital_primitives 0 22 G>kiXP8Q9dRClKfK1Zn7j1
+Z8 DPx8 cyclonev 18 cyclonev_atom_pack 0 22 Go?7O^>gO9PUGAbd]57Qz3
+Z9 DPx4 ieee 12 vital_timing 0 22 J>EBealN09f8GzldA[z2>3
+Z10 DPx8 cyclonev 19 cyclonev_components 0 22 KJiN=<?XEUbkUE2[idYZK3
+Z11 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z12 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+Z13 DPx12 altera_lnsim 23 altera_lnsim_components 0 22 kfhVHUgSbAm[03BJI^Zk12
+!i122 18
+R1
+Z14 8Atv1.vho
+Z15 FAtv1.vho
+l0
+L37 1
+V0ekhXleC:AdzkkhDz@hQg3
+!s100 8Afij:NNY@M2QffnHS1b81
+Z16 OL;C;2021.2;73
+32
+Z17 !s110 1661523602
+!i10b 1
+Z18 !s108 1661523602.000000
+Z19 !s90 -work|work|Atv1.vho|
+Z20 !s107 Atv1.vho|
+!i113 0
+Z21 o-work work
+Z22 tExplicit 1 CvgOpt 0
+Astructure
+R7
+R8
+R9
+R10
+R11
+R12
+R13
+DEx4 work 4 atv1 0 22 0ekhXleC:AdzkkhDz@hQg3
+!i122 18
+l93
+L44 406
+VdV:zNS[UI?i^lL?^<VH7I1
+!s100 b_CHcije:4J2c=cWX0NfM1
+R16
+32
+R17
+!i10b 1
+R18
+R19
+R20
+!i113 0
+R21
+R22
+Eatv1_vhd_vec_tst
+Z23 w1661523599
+R11
+R12
+!i122 19
+R1
+Z24 8Waveform4.vwf.vht
+Z25 FWaveform4.vwf.vht
+l0
+L32 1
+VB1`8fjQ@Bh4nnE:[_oAGe0
+!s100 ;Fb9DSB]jOmnh^_nO6nF<2
+R16
+32
+R17
+!i10b 1
+R18
+Z26 !s90 -work|work|Waveform4.vwf.vht|
+Z27 !s107 Waveform4.vwf.vht|
+!i113 0
+R21
+R22
+Aatv1_arch
+R11
+R12
+DEx4 work 16 atv1_vhd_vec_tst 0 22 B1`8fjQ@Bh4nnE:[_oAGe0
+!i122 19
+l45
+L34 118
+V>BVAgNSa;Fdeg@VYOWcJh1
+!s100 A2P>_L4QMOC?]>92L3A0G1
+R16
+32
+R17
+!i10b 1
+R18
+R26
+R27
+!i113 0
+R21
+R22

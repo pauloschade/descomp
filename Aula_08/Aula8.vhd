@@ -26,7 +26,7 @@ entity Aula8 is
 	 DISPLAYS_ON : out std_logic_vector(DISPLAYS_N-1 downto 0);
 	 BLOCK_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 ADDRESSES_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 ENABLE_DAS_KEYS : out std_logic;
+	 ROM_ADDR : out std_logic_vector(ADDRESS_SIZE-1 downto 0);
 	 CPU_IN : out std_logic_vector(DATA_SIZE-1 downto 0)
   );
 end entity;
@@ -74,6 +74,9 @@ architecture arquitetura of Aula8 is
 	 signal sw_addresses : std_logic_vector(SW_GROUPS_N-1 downto 0);
 	 signal enable_sw : std_logic;
 	 signal sw_data_out : std_logic_vector(DATA_SIZE-1 downto 0);
+	 
+	 -- clear key 0
+	 signal clr : std_logic;
 
 begin
 
@@ -147,6 +150,8 @@ KEYS : entity work.keysController generic map (DATA_SIZE => DATA_SIZE, KEYS_N =>
 			port map(
 				ADDRESSES  => keys_addresses,
 				ENABLE => enable_keys,
+				CLR => clr,
+				CLK => CLK,
 				DATA_OUT => keys_data_out
 			);
 			
@@ -187,13 +192,22 @@ data_in <= keys_data_out;
 data_in <= sw_data_out;
 -- ++++++++++++++++++++++++++++++++++++++++++
 
+clr <= data_address(0) and
+		 data_address(1) and
+		 data_address(2) and
+		 data_address(3) and
+		 data_address(4) and
+		 data_address(5) and
+		 data_address(6) and
+		 data_address(7) and
+		 data_address(8);
 -------------------------------------------------------------
 
 -------------------- OUTPUT TEST ----------------------------
 CPU_IN <= data_in;
 BLOCK_OUT <= decoder_block_out;
-ADDRESSES_OUT <= sw_data_out;
-ENABLE_DAS_KEYS <= enable_keys;
+ADDRESSES_OUT <= decoder_address_out;
+ROM_ADDR <= rom_address;
 -------------------------------------------------------------
 
 end architecture;

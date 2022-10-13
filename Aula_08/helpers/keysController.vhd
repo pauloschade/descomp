@@ -7,10 +7,11 @@ entity keysController is
 		  KEYS_N : natural := 5
 	 );
     port(
-        DATA_IN  : in std_logic_vector(KEYS_N-1 downto 0) := "10101";
+        DATA_IN  : in std_logic_vector(KEYS_N-1 downto 0) := "00000";
         ADDRESSES  : in std_logic_vector(KEYS_N-1 downto 0);
 		  ENABLE : in std_logic;
-		  CLR : in std_logic;
+		  CLR_0 : in std_logic;
+		  CLR_1 : in std_logic;
 		  CLK : in std_logic;
         DATA_OUT    : out std_logic_vector(DATA_SIZE-1 downto 0)
 	 );
@@ -24,10 +25,10 @@ architecture comportamento of keysController is
 begin
 
 KEY0 : entity work.descriminadorBorda
-			port map (DATA_IN => DATA_IN(0), ENABLE => enable_keys(0), CLR => CLR, CLK => CLK, DATA_OUT => DATA_OUT);
+			port map (DATA_IN => DATA_IN(0), ENABLE => enable_keys(0), CLR => CLR_0, CLK => CLK, DATA_OUT => DATA_OUT);
 			
-KEY1 : entity work.buffer_3_state
-			port map (DATA_IN => DATA_IN(1), ENABLE => enable_keys(1), DATA_OUT => DATA_OUT);
+KEY1 : entity work.descriminadorBorda
+			port map (DATA_IN => DATA_IN(1), ENABLE => enable_keys(1), CLR => CLR_1, CLK => CLK, DATA_OUT => DATA_OUT);
 			
 KEY2 : entity work.buffer_3_state
 			port map (DATA_IN => DATA_IN(2), ENABLE => enable_keys(2), DATA_OUT => DATA_OUT);

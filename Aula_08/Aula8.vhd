@@ -17,13 +17,34 @@ entity Aula8 is
 	 KEYS_N : natural := 5;
 	 
 	 SW_GROUPS_N : natural := 3;
+	 SW_N : natural := 10;
+	 
+	 LED_N : natural := 10;
+	 
+	 HEX_SIZE : natural := 7;
+	 
 	 
 	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
     KEY_IN: in std_logic;
-	 DISPLAYS_ON : out std_logic_vector(DISPLAYS_N-1 downto 0);
+	 
+	 SW : in std_logic_vector(SW_N-1 downto 0);
+	 
+	 KEY : in std_logic_vector(KEYS_N-2 downto 0);
+	 FPGA_RESET_N : in std_logic;
+	 
+	 
+	 HEX0 : out std_logic_vector(HEX_SIZE-1 downto 0); 
+	 HEX1 : out std_logic_vector(HEX_SIZE-1 downto 0);
+	 HEX2 : out std_logic_vector(HEX_SIZE-1 downto 0); 
+	 HEX3 : out std_logic_vector(HEX_SIZE-1 downto 0); 
+	 HEX4 : out std_logic_vector(HEX_SIZE-1 downto 0); 
+	 HEX5 : out std_logic_vector(HEX_SIZE-1 downto 0);
+	 
+	 LEDR : out std_logic_vector(LED_N-1 downto 0);
+	 
 	 BLOCK_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 ADDRESSES_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 ROM_ADDR : out std_logic_vector(ADDRESS_SIZE-1 downto 0);
@@ -67,6 +88,7 @@ architecture arquitetura of Aula8 is
 	 signal displays_addresses : std_logic_vector(DISPLAYS_N-1 downto 0);
 	 signal enable_displays : std_logic;
 	 
+	 signal keys_in : std_logic_vector(KEYS_N-1 downto 0);
 	 signal keys_addresses : std_logic_vector(KEYS_N-1 downto 0);
 	 signal enable_keys : std_logic;
 	 signal keys_data_out : std_logic_vector(DATA_SIZE-1 downto 0);
@@ -76,7 +98,9 @@ architecture arquitetura of Aula8 is
 	 signal sw_data_out : std_logic_vector(DATA_SIZE-1 downto 0);
 	 
 	 -- clear key 0
-	 signal clr : std_logic;
+	 signal clr_0 : std_logic;
+	 -- clear key 1
+	 signal clr_1 : std_logic;
 
 begin
 
@@ -84,10 +108,10 @@ begin
 
 -- Para simular, fica mais simples tirar o edgeDetector
 gravar:  if simulacao generate
-CLK <= KEY_IN;
+CLK <= KEY_IN;                       
 else generate
 detectorSub0: work.edgeDetector(bordaSubida)
-        port map (clk => CLOCK_50, entrada => (not KEY_IN), saida => CLK);
+        port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
 end generate;
 
 
@@ -143,20 +167,28 @@ DISPLAYS : entity work.displaysController generic map (DATA_SIZE => DISPLAYS_DAT
 				ADDRESSES => displays_addresses, 
 				ENABLE => enable_displays, 
 				CLK => CLK, 
-				DISPLAYS_ON => DISPLAYS_ON
+				HEX0 => HEX0,
+				HEX1 => HEX1,
+				HEX2 => HEX2,
+				HEX3 => HEX3,
+				HEX4 => HEX4,
+				HEX5 => HEX5
 			);
 			
 KEYS : entity work.keysController generic map (DATA_SIZE => DATA_SIZE, KEYS_N => KEYS_N)
 			port map(
+				DATA_IN => keys_in,
 				ADDRESSES  => keys_addresses,
 				ENABLE => enable_keys,
-				CLR => clr,
+				CLR_0 => clr_0,
+				CLR_1 => clr_1,
 				CLK => CLK,
 				DATA_OUT => keys_data_out
 			);
 			
-SW : entity work.switchesController generic map (DATA_SIZE => DATA_SIZE, SW_GROUPS_N => SW_GROUPS_N)
+SWITCHES : entity work.switchesController generic map (DATA_SIZE => DATA_SIZE, SW_GROUPS_N => SW_GROUPS_N)
 			port map(
+				DATA_IN => SW,
 				ADDRESSES  => sw_addresses,
 				ENABLE => enable_sw,
 				DATA_OUT => sw_data_out
@@ -180,8 +212,12 @@ displays_data <= cpu_data_out(DISPLAYS_DATA_SIZE-1 downto 0);
 displays_addresses <= decoder_address_out(DISPLAYS_N-1 downto 0);
 enable_displays <= A5 and decoder_block_out(4) and wr;
 
+-- +++++++++++ KEYS ++++++++++++++++++
+keys_in(KEYS_N-2 downto 0) <= KEY;
+keys_in(KEYS_N-1) <= FPGA_RESET_N;
 keys_addresses <= decoder_address_out(KEYS_N-1 downto 0);
 enable_keys <= rd and A5 and decoder_block_out(5);
+-- +++++++++++++++++++++++++++++++++++
 
 sw_addresses <= decoder_address_out(SW_GROUPS_N-1 downto 0);
 enable_sw <= rd and not(A5) and decoder_block_out(5);
@@ -191,8 +227,8 @@ data_in <= ram_data_out;
 data_in <= keys_data_out;
 data_in <= sw_data_out;
 -- ++++++++++++++++++++++++++++++++++++++++++
-
-clr <= data_address(0) and
+		 
+clr_1 <= wr and
 		 data_address(1) and
 		 data_address(2) and
 		 data_address(3) and
@@ -201,6 +237,9 @@ clr <= data_address(0) and
 		 data_address(6) and
 		 data_address(7) and
 		 data_address(8);
+		 
+clr_0 <= data_address(0) and
+			clr_1;
 -------------------------------------------------------------
 
 -------------------- OUTPUT TEST ----------------------------
@@ -208,6 +247,10 @@ CPU_IN <= data_in;
 BLOCK_OUT <= decoder_block_out;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
+
+LEDR(ADDRESS_SIZE-1 downto 0) <= rom_address;
+--LEDR(8) <= led_8;
+LEDR(9) <= led_9;
 -------------------------------------------------------------
 
 end architecture;

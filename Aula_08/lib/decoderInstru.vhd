@@ -36,7 +36,7 @@ saida <= "000000000000" when opcode = NOP else
 			"010000000000" when opcode = JMP else
 			-- CMP
 			"000010000000" when opcode = JEQ else
-			"000000000100" when opcode = CEQ else
+			"000000000110" when opcode = CEQ else
 			-- CALL
 			"100100000000" when opcode = JSR else
 			"001000000000" when opcode = RET else

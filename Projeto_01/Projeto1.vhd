@@ -26,7 +26,7 @@ entity Projeto1 is
 	 REGS_N : natural := 3;
 	 
 	 
-	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
@@ -112,8 +112,8 @@ begin
 gravar:  if simulacao generate
 CLK <= KEY_IN;                       
 else generate
-detectorSub0: work.edgeDetector(bordaSubida)
-        port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
+CLK <= CLOCK_50;
+--detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
 end generate;
 
 
@@ -250,9 +250,9 @@ BLOCK_OUT <= decoder_block_out;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
 
-LEDR(ADDRESS_SIZE-1 downto 0) <= rom_address;
+--LEDR(ADDRESS_SIZE-1 downto 0) <= rom_address;
 --LEDR(8) <= led_8;
-LEDR(9) <= led_9;
+--LEDR(9) <= led_9;
 -------------------------------------------------------------
 
 end architecture;

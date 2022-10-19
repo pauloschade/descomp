@@ -14,11 +14,14 @@ class Assembler:
         lines = self._clear(lines)
         lines_r = lines.copy()
         lines_r = self._replace_labels(lines_r)
+        cmd_lines = []
+        for i in range(len(lines_r)):
+            line = lines_r[i].strip('\n')
+            bin = self._convert_value(line)
+            cmd_lines.append(bin)
         with open(self.path_out, "w") as fout:
-            for i in range(len(lines_r)):
-                line = lines_r[i].strip('\n')
-                bin = self._convert_value(line)
-                txt = 'tmp(' + str(i) + ') := ' + bin + ';' + ' -- ' + lines[i] + '\n'
+            for i in range(len(cmd_lines)):
+                txt = 'tmp(' + str(i) + ') := ' + cmd_lines[i] + ';' + ' -- ' + lines_r[i] + '\n'
                 fout.write(txt)
 
     def _convert_value(self, line):
@@ -68,12 +71,15 @@ class Assembler:
                     
 
     def _find_labels(self, arr):
+        removed = 0
         dict_ = {}
         for i in range(len(arr)):
-            if arr[i][0] == self.label_tag:
-                label = (arr[i].split(self.label_tag)[1]).strip('\n')
-                dict_[label] = '@' + str(i+1)
-                arr[i] = 'NOP'
+            index = i - removed
+            if arr[index][0] == self.label_tag:
+                label = (arr[index].split(self.label_tag)[1]).strip('\n')
+                dict_[label] = str(index)
+                arr.pop(index)
+                removed += 1
         return dict_, arr
                 
     def _clear(self, arr):

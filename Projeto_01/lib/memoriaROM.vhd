@@ -36,80 +36,93 @@ architecture assincrona of memoriaROM is
         return blocoMemoria is variable tmp : blocoMemoria := (others => (others => '0'));
   begin
 			
-			
-			tmp(0) := LDI & "000" & "000000000"; -- LDI R0 $0
+tmp(0) := LDI & "111" & "000000000"; -- LDI R7 $0
 
-			tmp(1) := STA & "001" & "000001000"; -- STA R1 @MEM0
+tmp(1) := STA & "000" & "000001000"; -- STA R0 @MEM0
 
-			tmp(2) := LDI & "000" & "000000001"; -- LDI R0 $1
+tmp(2) := LDI & "111" & "000000001"; -- LDI R7 $1
 
-			tmp(3) := STA & "000" & "000001001"; -- STA R0 @MEM1
+tmp(3) := STA & "111" & "000001001"; -- STA R7 @MEM1
 
-			tmp(4) := LDI & "000" & "000001001"; -- LDI R0 $9
+tmp(4) := LDI & "111" & "000001001"; -- LDI R7 $9
 
-			tmp(5) := STA & "000" & "000001001"; -- STA R0 @MEM9
+tmp(5) := STA & "111" & "000001110"; -- STA R7 @MEM9
 
-			tmp(6) := LDI & "001" & "000000000"; -- LDI R1 $0
+tmp(6) := LDI & "000" & "000000000"; -- LDI R0 $0
 
-			tmp(7) := LDI & "010" & "000000000"; -- LDI R2 $0
+tmp(7) := LDI & "001" & "000000000"; -- LDI R1 $0
 
-			tmp(8) := LDI & "011" & "000000000"; -- LDI R3 $0
+tmp(8) := LDI & "010" & "000000000"; -- LDI R2 $0
 
-			tmp(9) := NOP & "000" & "000000000"; -- !RETORNO
+tmp(9) := LDI & "011" & "000000000"; -- LDI R3 $0
 
-			tmp(10) := LDA & "000" & "101100000"; -- LDA R0 @KEY0
+tmp(10) := LDI & "100" & "000000000"; -- LDI R4 $0
 
-			tmp(11) := CEQ & "000" & "000000000"; -- CEQ R0 @0
+tmp(11) := LDA & "111" & "101100000"; -- LDA R7 @KEY0
 
-			tmp(12) := JEQ & "000" & "000001010"; -- JEQ @RETORNO
+tmp(12) := CEQ & "111" & "000000000"; -- CEQ R7 @0
 
-			tmp(13) := JSR & "000" & "000010000"; -- JSR @INCREMENTA
+tmp(13) := JEQ & "000" & "000001011"; -- JEQ @11
 
-			tmp(14) := JMP & "000" & "000001010"; -- JMP @RETORNO
+tmp(14) := JSR & "000" & "000010000"; -- JSR @16
 
-			tmp(15) := NOP & "000" & "000000000"; -- !INCREMENTA
+tmp(15) := JMP & "000" & "000001011"; -- JMP @11
 
-			tmp(16) := LDA & "000" & "000001000"; -- LDA R0 $MEM0
+tmp(16) := STA & "000" & "111111111"; -- STA @clr_KEY0
 
-			tmp(17) := STA & "000" & "111111111"; -- STA @clr_KEY0
+tmp(17) := CEQ & "000" & "000001110"; -- CEQ R0 @MEM9
 
-			tmp(18) := CEQ & "001" & "000001001"; -- CEQ R1 @MEM9
+tmp(18) := JEQ & "000" & "000010110"; -- JEQ @22
 
-			tmp(19) := JEQ & "000" & "000011000"; -- JEQ @DEZENA
+tmp(19) := SOMA & "000" & "000001001"; -- SOMA R0 @MEM1
 
-			tmp(20) := SOMA & "001" & "000001001"; -- SOMA R1 @MEM1
+tmp(20) := STA & "000" & "100100000"; -- STA R0 @HEX0
 
-			tmp(21) := STA & "001" & "100100000"; -- STA R1 @HEX0
+tmp(21) := RET & "000" & "000000000"; -- RET
 
-			tmp(22) := RET & "000" & "000000000"; -- RET
+tmp(22) := LDA & "000" & "000001000"; -- LDA R0 $MEM0
 
-			tmp(23) := NOP & "000" & "000000000"; -- !DEZENA
+tmp(23) := STA & "000" & "100100000"; -- STA R0 @HEX0
 
-			tmp(24) := STA & "000" & "100100000"; -- STA R0 @HEX0
+tmp(24) := CEQ & "001" & "000001110"; -- CEQ R1 @MEM9
 
-			tmp(25) := CEQ & "010" & "000001001"; -- CEQ R2 @MEM9
+tmp(25) := JEQ & "000" & "000011101"; -- JEQ @29
 
-			tmp(26) := JEQ & "000" & "000011111"; -- JEQ @CENTENA
+tmp(26) := SOMA & "001" & "000001001"; -- SOMA R1 @MEM1
 
-			tmp(27) := SOMA & "010" & "000001001"; -- SOMA R2 @MEM1
+tmp(27) := STA & "001" & "100100001"; -- STA R1 @HEX1
 
-			tmp(28) := STA & "010" & "100100001"; -- STA R2 @HEX1
+tmp(28) := RET & "000" & "000000000"; -- RET
 
-			tmp(29) := RET & "000" & "000000000"; -- RET
+tmp(29) := LDA & "001" & "000001000"; -- LDA R1 $MEM0
 
-			tmp(30) := NOP & "000" & "000000000"; -- !CENTENA
+tmp(30) := STA & "001" & "100100001"; -- STA R1 @HEX1
 
-			tmp(31) := STA & "000" & "100100001"; -- STA R0 @HEX1
+tmp(31) := CEQ & "010" & "000001110"; -- CEQ R2 @MEM9
 
-			tmp(32) := CEQ & "011" & "000001001"; -- CEQ R3 @MEM9
+tmp(32) := JEQ & "000" & "000100100"; -- JEQ @36
 
-			tmp(33) := JEQ & "000" & "000011111"; -- JEQ @CENTENA
+tmp(33) := SOMA & "010" & "000001001"; -- SOMA R2 @MEM1
 
-			tmp(34) := SOMA & "011" & "000001001"; -- SOMA R3 @MEM1
+tmp(34) := STA & "010" & "100100010"; -- STA R2 @HEX2
 
-			tmp(35) := STA & "011" & "100100011"; -- STA R3 @HEX3
+tmp(35) := RET & "000" & "000000000"; -- RET
 
-			tmp(36) := RET & "000" & "000000000"; -- RET
+tmp(36) := LDA & "010" & "000001000"; -- LDA R2 $MEM0
+
+tmp(37) := STA & "010" & "100100010"; -- STA R2 @HEX2
+
+tmp(38) := CEQ & "011" & "000001110"; -- CEQ R3 @MEM9
+
+tmp(39) := JEQ & "000" & "000100100"; -- JEQ @36
+
+tmp(40) := SOMA & "011" & "000001001"; -- SOMA R3 @MEM1
+
+tmp(41) := STA & "011" & "100100011"; -- STA R3 @HEX3
+
+tmp(42) := RET & "000" & "000000000"; -- RET
+
+
 		  
         return tmp;
     end initMemory;

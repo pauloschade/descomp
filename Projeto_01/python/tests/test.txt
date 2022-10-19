@@ -1,0 +1,21 @@
+LDI $0
+STA @0
+STA @2
+LDI $1
+STA @1
+NOP
+LDA @KEY0
+CEQ @0
+JEQ @11
+JSR Incremento
+NOP
+JMP @5
+
+!Incremento
+STA @511
+LDA @2
+SOMA @1
+STA @2
+STA @258
+STA @288
+RET

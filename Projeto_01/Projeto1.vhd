@@ -250,7 +250,9 @@ BLOCK_OUT <= decoder_block_out;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
 
---LEDR(ADDRESS_SIZE-1 downto 0) <= rom_address;
+-- LEDR(ADDRESS_SIZE-1 downto 0) <= rom_address;
+LEDR(9) <= clr_1;
+---------------------------------------------------------------
 --LEDR(8) <= led_8;
 --LEDR(9) <= led_9;
 -------------------------------------------------------------

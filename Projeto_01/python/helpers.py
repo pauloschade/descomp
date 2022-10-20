@@ -18,10 +18,10 @@ addr = {
         "KEY1": "353",
         "KEY2": "354",
         "KEY3": "355",
-        "fpga_reset": "356",
+        "FPGA_RESET": "356",
 
-        "clr_KEY0" : "511",
-        "clr_KEY1" : "510",
+        "CLR_KEY0" : "511",
+        "CLR_KEY1" : "510",
 
         "LIM0": "2",
         "LIM1": "3",

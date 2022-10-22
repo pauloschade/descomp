@@ -103,7 +103,7 @@ architecture arquitetura of Projeto1 is
 	 signal clr_0 : std_logic;
 	 -- clear key 1
 	 signal clr_1 : std_logic;
-	 
+
 begin
 
 -- Instanciando os componentes:
@@ -250,9 +250,9 @@ BLOCK_OUT <= decoder_block_out;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
 
---LEDR(ADDRESS_SIZE-1 downto 0) <= rom_address;
---LEDR(8) <= led_8;
---LEDR(9) <= led_9;
+LEDR(DATA_SIZE-1 downto 0) <= led_R;
+LEDR(8) <= led_8;
+LEDR(9) <= led_9;
 -------------------------------------------------------------
 
 end architecture;

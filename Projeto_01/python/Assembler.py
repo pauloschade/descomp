@@ -96,6 +96,3 @@ class Assembler:
     def _get_lines(self):
         with open(self.path_in, "r") as fin: #Abre o arquivo ASM
             return fin.readlines()
-
-# a = Assembler(9, "ASM.txt", "out2.txt", '!')
-# a.convert()

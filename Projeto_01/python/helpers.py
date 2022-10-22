@@ -36,6 +36,7 @@ addr = {
         "MEMLIM": "12",
         "MEMREG": "13",
         "MEMREG2": "14",
-        "MEMAUX": "14",
-        "MEM9": "16",
+        "MEMAUX": "15",
+        "MEMCOMP": "16",
+        "MEM9": "17",
 }

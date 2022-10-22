@@ -7,13 +7,13 @@ class Assembler:
         self.path_in = path_in
         self.path_out = path_out
         self.label_tag = label_tag
-        self.chars = ['@', '$', 'R']
+        self.chars = ['@', '$', '[', ']']
     
     def convert(self):
         lines = self._get_lines()
         lines = self._clear(lines)
         lines_r = lines.copy()
-        lines_r = self._replace_labels(lines_r)
+        lines_r = self._replace_labels_v2(lines_r)
         cmd_lines = []
         for i in range(len(lines_r)):
             line = lines_r[i].strip('\n')
@@ -28,31 +28,25 @@ class Assembler:
         elements = line.split(" ")
         if len(elements) == 1:
             return self._format_output(elements[0], 0, 0)
-
+        
+        el_1 = elements[1]
         for i in self.chars:
-            if i in elements[1]:
-                el_1 = elements[1].strip(i)
+            if i in el_1:
+                el_1 = el_1.strip(i)
         if len(elements) == 2:
-            print(el_1)
             return self._format_output(elements[0], 0, el_1)
         
+        el_2 = elements[2]
         for i in self.chars:
-            if i in elements[2]:
-                el_2 = elements[2].strip(i)
+            if i in el_2:
+                el_2 = el_2.strip(i)
         return self._format_output(elements[0], el_1, el_2)
 
-        # if not (any(x in line for x in self.chars)):
-        #     return self._format_output(line, 0)
-        # for i in self.chars:
-        #     if i in line:
-        #         vals = line.split(i)
-        # return self._format_output(vals[0], vals[1])
-
     def _format_output(self, mne, reg, val):
-        if type(val) == str:
-            val = val.strip('\n')
-            if val in addr.keys():
-                val = addr[val]
+        # if type(val) == str:
+        #     val = val.strip('\n')
+        #     if val in addr.keys():
+        #         val = addr[val]
         return mne + ' & ' + self._format_bin(reg, self.regs_n) + ' & ' + self._format_bin(val, self.bits_size)
 
     def _replace_labels(self, arr):
@@ -61,8 +55,22 @@ class Assembler:
             if arr[i][0] == 'J':
                 for label in label_dict:
                     if label in arr[i]:
-                        print(label)
                         arr[i] = arr[i].replace(label, label_dict[label])
+
+        return arr
+
+
+    def _replace_labels_v2(self, arr):
+        label_dict, arr = self._find_labels(arr)
+        for i in range(len(arr)):
+            sp = arr[i].split("@")
+            name = sp[-1].strip('\n')
+            if name in label_dict:
+                val = label_dict[name]
+                arr[i] = arr[i].replace(name, val)
+            elif name in addr.keys():
+                val = addr[name]
+                arr[i] = arr[i].replace(name, val)
 
         return arr
 
@@ -91,5 +99,3 @@ class Assembler:
 
 # a = Assembler(9, "ASM.txt", "out2.txt", '!')
 # a.convert()
-
-        

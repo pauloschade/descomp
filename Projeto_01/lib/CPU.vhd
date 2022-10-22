@@ -146,7 +146,7 @@ control_Desvio(1) <= Sinais_Controle(7);
 control_Desvio(0) <= flag_out;
 
 -- -- Retorno
-enable_RET <= Sinais_Controle(CONTROL_SIZE-1);
+enable_RET <= Sinais_Controle(11);
 -------------------------------------------------------------
 
 

@@ -24,12 +24,14 @@ architecture comportamento of decoderInstru is
   constant CEQ  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "1000";
   constant JSR  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "1001";
   constant RET  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "1010";
+  constant ANDB : std_logic_vector(OPCODE_SIZE-1 downto 0) := "1011";
 
   begin
 saida <= "000000000000" when opcode = NOP else
          "000000110010" when opcode = LDA else
          "000000100010" when opcode = SOMA else
          "000000101010" when opcode = SUB else
+			"000000111010" when opcode = ANDB else
          "000001110000" when opcode = LDI else
 			"000000000001" when opcode = STA else
 			-- JMP

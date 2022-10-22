@@ -103,7 +103,7 @@ architecture arquitetura of Projeto1 is
 	 signal clr_0 : std_logic;
 	 -- clear key 1
 	 signal clr_1 : std_logic;
-
+	 
 begin
 
 -- Instanciando os componentes:

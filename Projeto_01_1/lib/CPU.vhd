@@ -8,8 +8,8 @@ entity CPU is
 	 ADDRESS_SIZE : natural := 9;
 	 INSTRUCTIONS_SIZE : natural := 13;
 	 OPCODE_SIZE : natural := 4;
-	 CONTROL_SIZE : natural := 14;
-	 CONTROL_DESVIO_SIZE : natural := 5;
+	 CONTROL_SIZE : natural := 15;
+	 CONTROL_DESVIO_SIZE : natural := 7;
 	 REGS_N : natural := 3;
 	 MUX_DESVIO_SELECTOR_SIZE : natural := 2
 	 
@@ -57,10 +57,12 @@ architecture arquitetura of CPU is
   signal Operacao_ULA : std_logic_vector(1 downto 0);
   
   -- REG FLAG
-  signal flag_ULA : std_logic;
-  signal flag_out : std_logic;
+  signal flag_eq_ULA : std_logic;
+  signal flag_eq_out : std_logic;
   signal enable_feq : std_logic;
   
+  signal flag_lt_ULA : std_logic;
+  signal flag_lt_out : std_logic;
   signal enable_flt : std_logic;
   
   -- MUX PC
@@ -95,7 +97,9 @@ REGMEM : entity work.bancoRegistradoresArqRegMem   generic map (DATA_SIZE => DAT
           port map (DATA_IN => ULA_out, ADDR => REG_address, DATA_OUT => reg1_ULA_A, ENABLE => Habilita_A, CLK => CLK);
 			 
 -- REGFLAG : entity.work.flipFlop
-REGFLAG : entity work.flipFlop port map (DIN => flag_ULA, DOUT => flag_out, ENABLE => enable_feq, CLK => CLK);
+REG_FLAG_EQ : entity work.flipFlop port map (DIN => flag_eq_ULA, DOUT => flag_eq_out, ENABLE => enable_feq, CLK => CLK);
+
+REG_FLAG_LT : entity work.flipFlop port map (DIN => flag_lt_ULA, DOUT => flag_lt_out, ENABLE => enable_feq, CLK => CLK);
 
 -- O port map completo do Program Counter.
 PC : entity work.registradorGenerico   generic map (DATA_SIZE => ADDRESS_SIZE)
@@ -120,7 +124,15 @@ RegDesvio : entity work.registradorGenerico   generic map (DATA_SIZE => ADDRESS_
 
 -- O port map completo da ULA:
 ULA1 : entity work.ULASomaSub  generic map(DATA_SIZE => DATA_SIZE)
-          port map (entradaA => reg1_ULA_A, entradaB => ULA_B_in, seletor => Operacao_ULA, saida => ULA_out, flag => flag_ULA);
+          port map 
+			 (
+				 entradaA => reg1_ULA_A, 
+				 entradaB => ULA_B_in, 
+				 seletor => Operacao_ULA, 
+				 saida => ULA_out, 
+				 flag_eq => flag_eq_ULA,
+				 flag_lt => flag_lt_ULA
+			 );
 			 
 			 
 DI1 : entity work.decoderInstru	generic map(OPCODE_SIZE => OPCODE_SIZE, CONTROL_SIZE => CONTROL_SIZE)
@@ -142,14 +154,16 @@ imediato_address <= INSTRUCTIONS(ADDRESS_SIZE-1 downto 0);
 REG_address <= INSTRUCTIONS(INSTRUCTIONS_SIZE-OPCODE_SIZE-1 downto INSTRUCTIONS_SIZE-OPCODE_SIZE-REGS_N);
 
 -- -- Logica Desvio
-control_Desvio(4) <= Sinais_Controle(11);
-control_Desvio(3) <= Sinais_Controle(10);
-control_Desvio(2) <= Sinais_Controle(9);
-control_Desvio(1) <= Sinais_Controle(8);
-control_Desvio(0) <= flag_out;
+control_Desvio(6) <= Sinais_Controle(12);
+control_Desvio(5) <= Sinais_Controle(11);
+control_Desvio(4) <= Sinais_Controle(10);
+control_Desvio(3) <= Sinais_Controle(9);
+control_Desvio(2) <= Sinais_Controle(8);
+control_Desvio(1) <= flag_lt_out;
+control_Desvio(0) <= flag_eq_out;
 
 -- -- Retorno
-enable_RET <= Sinais_Controle(12);
+enable_RET <= Sinais_Controle(13);
 -------------------------------------------------------------
 
 

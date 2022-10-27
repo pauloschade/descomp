@@ -29,21 +29,25 @@ architecture comportamento of decoderInstru is
   constant JLT  : std_logic_vector(3 downto 0) := "1101";
 
   begin
-saida <= "00000000000000" when opcode = NOP else
-         "00000001100010" when opcode = LDA else
-         "00000001000010" when opcode = SOMA else
-         "00000001010010" when opcode = SUB else
-			"00000001110010" when opcode = ANDB else
-         "00000011100000" when opcode = LDI else
-			"00000000000001" when opcode = STA else
+saida <= "000000000000000" when opcode = NOP else
+         "000000001100010" when opcode = LDA else
+         "000000001000010" when opcode = SOMA else
+         "000000001010010" when opcode = SUB else
+			"000000001110010" when opcode = ANDB else
+         "000000011100000" when opcode = LDI else
+			"000000000000001" when opcode = STA else
 			-- JMP
-			"00100000000000" when opcode = JMP else
+			"001000000000000" when opcode = JMP else
 			-- CMP
-			"00000100000000" when opcode = JEQ else
-			"00000000000110" when opcode = CEQ else
+			"000000100000000" when opcode = JEQ else
+			"000000000000110" when opcode = CEQ else
 			-- CALL
-			"01001000000000" when opcode = JSR else
-			"00010000000000" when opcode = RET else
+			"010010000000000" when opcode = JSR else
+			"000100000000000" when opcode = RET else
 			
-         "00000000000000";  -- NOP para os opcodes Indefinidos
+			--LESS
+			"000001000000000" when opcode = JLT else
+			"000000000001010" when opcode = CLT else
+			
+         "000000000000000";  -- NOP para os opcodes Indefinidos
 end architecture;

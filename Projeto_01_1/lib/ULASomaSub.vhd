@@ -8,7 +8,8 @@ entity ULASomaSub is
       entradaA, entradaB:  in STD_LOGIC_VECTOR((DATA_SIZE-1) downto 0);
       seletor:  in STD_LOGIC_VECTOR(1 downto 0);
       saida:    out STD_LOGIC_VECTOR((DATA_SIZE-1) downto 0);
-		flag:		 out std_logic
+		flag_eq:		 out std_logic;
+		flag_lt: out std_logic
     );
 end entity;
 
@@ -34,6 +35,7 @@ architecture comportamento of ULASomaSub is
 					sub when seletor = selector_sub else
 					andb when seletor = selector_and else
 					pass;
-		flag <= not(sub(0) or sub(1) or sub(2) or sub(3) or sub(4) or sub(5) or sub(6) or sub(7));
+		flag_eq <= not(sub(0) or sub(1) or sub(2) or sub(3) or sub(4) or sub(5) or sub(6) or sub(7));
+		flag_lt <= sub(7);
 					
 end architecture;

@@ -20,7 +20,7 @@ addr = {
         "KEY3": "355",
         "FPGA_RESET": "356",
 
-        "1SEC" : "508",
+        "ENABLE_1SEC" : "508",
         "CLR_1SEC" : "509",
         "CLR_KEY0" : "511",
         "CLR_KEY1" : "510",

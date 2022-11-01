@@ -29,6 +29,7 @@ registraUmSegundo: entity work.flipFlop
          RST => CLR);
 
 -- Faz o tristate de saida:
-DATA_OUT <= "0000000" & sinalUmSegundo when ENABLE = '1' else "ZZZZZZZZ";
+buf : entity work.buffer_3_state
+			port map (DATA_IN => sinalUmSegundo, ENABLE => ENABLE, DATA_OUT => DATA_OUT);
 
 end architecture interface;

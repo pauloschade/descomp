@@ -53,6 +53,7 @@ entity Projeto1 is
 end entity;
 
 
+
 architecture arquitetura of Projeto1 is
 	 signal CLK: std_logic;
 	 
@@ -115,7 +116,7 @@ gravar:  if simulacao generate
 CLK <= KEY_IN;                       
 else generate
 CLK <= CLOCK_50;
---detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
+-- detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
 end generate;
 
 
@@ -239,9 +240,9 @@ data_in <= ram_data_out;
 data_in <= keys_data_out;
 data_in <= sw_data_out;
 data_in <= data_out_1sec;
--- ++++++++++++++++++++++++++++++++++++++++++
-		 
-clr_1 <= wr and
+-- ++++++++++++++++++++++++++++++++++++++++++]
+clr_0 <= wr and
+		 data_address(0) and
 		 data_address(1) and
 		 data_address(2) and
 		 data_address(3) and
@@ -251,13 +252,21 @@ clr_1 <= wr and
 		 data_address(7) and
 		 data_address(8);
 		 
-clr_0 <= data_address(0) and
-			clr_1;
+clr_1 <= wr and
+		 (not(data_address(0))) and
+		 data_address(1) and
+		 data_address(2) and
+		 data_address(3) and
+		 data_address(4) and
+		 data_address(5) and
+		 data_address(6) and
+		 data_address(7) and
+		 data_address(8);
 
 -- 509
 clr_1sec <= wr and
 		 data_address(0) and
-		 not(data_address(1)) and
+		 (not(data_address(1))) and
 		 data_address(2) and
 		 data_address(3) and
 		 data_address(4) and
@@ -268,8 +277,8 @@ clr_1sec <= wr and
 
 -- 508 
 enable_1sec <= wr and
-		 not(data_address(0)) and 
-		 not(data_address(1)) and
+		 (not(data_address(0))) and 
+		 (not(data_address(1))) and
 		 data_address(2) and
 		 data_address(3) and
 		 data_address(4) and
@@ -281,13 +290,12 @@ enable_1sec <= wr and
 
 -------------------- OUTPUT TEST ----------------------------
 CPU_IN <= data_in;
-BLOCK_OUT <= decoder_block_out;
+BLOCK_OUT <= data_out_1sec;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
 
-LEDR(DATA_SIZE-1 downto 0) <= led_R;
-LEDR(8) <= led_8;
-LEDR(9) <= led_9;
+LEDR(DATA_SIZE downto 0) <= rom_address;
+LEDR(9) <= enable_1sec;
 -------------------------------------------------------------
 
 end architecture;

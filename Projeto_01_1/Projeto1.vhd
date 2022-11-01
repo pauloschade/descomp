@@ -101,6 +101,10 @@ architecture arquitetura of Projeto1 is
 	 signal clr_0 : std_logic;
 	 -- clear key 1
 	 signal clr_1 : std_logic;
+	 
+	 signal enable_1sec : std_logic;
+	 signal clr_1sec : std_logic;
+	 signal data_out_1sec : std_logic_vector(DATA_SIZE-1 downto 0);
 
 begin
 
@@ -194,6 +198,14 @@ SWITCHES : entity work.switchesController generic map (DATA_SIZE => DATA_SIZE, S
 				DATA_OUT => sw_data_out
 			);
 
+ONE_SEC : entity work.divisorGenerico_e_Interface generic map(DATA_SIZE => DATA_SIZE)
+			port map(
+				CLK => CLK,
+				ENABLE => enable_1sec,
+				CLR => clr_1sec,
+				DATA_OUT => data_out_1sec
+			);
+
 			
 -------------------- TO HELP --------------------------------
 A5 <= data_address(5);
@@ -226,6 +238,7 @@ enable_sw <= rd and not(A5) and decoder_block_out(5);
 data_in <= ram_data_out;
 data_in <= keys_data_out;
 data_in <= sw_data_out;
+data_in <= data_out_1sec;
 -- ++++++++++++++++++++++++++++++++++++++++++
 		 
 clr_1 <= wr and
@@ -240,6 +253,30 @@ clr_1 <= wr and
 		 
 clr_0 <= data_address(0) and
 			clr_1;
+
+-- 509
+clr_1sec <= wr and
+		 data_address(0) and
+		 not(data_address(1)) and
+		 data_address(2) and
+		 data_address(3) and
+		 data_address(4) and
+		 data_address(5) and
+		 data_address(6) and
+		 data_address(7) and
+		 data_address(8);
+
+-- 508 
+enable_1sec <= wr and
+		 not(data_address(0)) and 
+		 not(data_address(1)) and
+		 data_address(2) and
+		 data_address(3) and
+		 data_address(4) and
+		 data_address(5) and
+		 data_address(6) and
+		 data_address(7) and
+		 data_address(8);
 -------------------------------------------------------------
 
 -------------------- OUTPUT TEST ----------------------------

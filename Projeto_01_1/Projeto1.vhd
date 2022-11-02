@@ -24,7 +24,7 @@ entity Projeto1 is
 	 HEX_SIZE : natural := 7;
 	 
 	 
-	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
@@ -118,8 +118,8 @@ begin
 gravar:  if simulacao generate
 CLK <= KEY_IN;                       
 else generate
-CLK <= CLOCK_50;
--- detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
+-- CLK <= CLOCK_50;
+detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
 end generate;
 
 

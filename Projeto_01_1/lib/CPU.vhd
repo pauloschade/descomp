@@ -157,10 +157,10 @@ REG_address <= INSTRUCTIONS(INSTRUCTIONS_SIZE-OPCODE_SIZE-1 downto INSTRUCTIONS_
 control_Desvio(6) <= Sinais_Controle(12);
 control_Desvio(5) <= Sinais_Controle(11);
 control_Desvio(4) <= Sinais_Controle(10);
-control_Desvio(3) <= Sinais_Controle(9);
-control_Desvio(2) <= Sinais_Controle(8);
-control_Desvio(1) <= flag_lt_out;
-control_Desvio(0) <= flag_eq_out;
+control_Desvio(3) <= Sinais_Controle(9); -- JLT
+control_Desvio(2) <= Sinais_Controle(8); -- JEQ
+control_Desvio(1) <= flag_lt_out; -- FLAG LT
+control_Desvio(0) <= flag_eq_out; -- FLAG EQ
 
 -- -- Retorno
 enable_RET <= Sinais_Controle(13);

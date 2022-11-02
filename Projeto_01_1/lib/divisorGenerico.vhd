@@ -3,7 +3,7 @@ USE ieee.std_logic_1164.ALL;
 use ieee.numeric_std.all;
 
 entity divisorGenerico is
-generic (divisor : natural := 8);
+generic (divisor : natural := 25000000);
     port(
       clk      :   in std_logic;
       saida_clk :   out std_logic);

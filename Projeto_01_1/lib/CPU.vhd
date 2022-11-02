@@ -21,6 +21,8 @@ entity CPU is
 	 ROM_ADDRESS: out std_logic_vector(ADDRESS_SIZE-1 downto 0);
 	 DATA_OUT: out std_logic_vector(DATA_SIZE-1 downto 0);
 	 DATA_ADDRESS: out std_logic_vector(ADDRESS_SIZE-1 downto 0);
+	 sig_JLT : out std_logic;
+	 sig_LT : out std_logic;
 	 WR: out std_logic;
 	 RD: out std_logic
   );
@@ -99,7 +101,7 @@ REGMEM : entity work.bancoRegistradoresArqRegMem   generic map (DATA_SIZE => DAT
 -- REGFLAG : entity.work.flipFlop
 REG_FLAG_EQ : entity work.flipFlop port map (DIN => flag_eq_ULA, DOUT => flag_eq_out, ENABLE => enable_feq, CLK => CLK);
 
-REG_FLAG_LT : entity work.flipFlop port map (DIN => flag_lt_ULA, DOUT => flag_lt_out, ENABLE => enable_feq, CLK => CLK);
+REG_FLAG_LT : entity work.flipFlop port map (DIN => flag_lt_ULA, DOUT => flag_lt_out, ENABLE => enable_flt, CLK => CLK);
 
 -- O port map completo do Program Counter.
 PC : entity work.registradorGenerico   generic map (DATA_SIZE => ADDRESS_SIZE)
@@ -157,10 +159,10 @@ REG_address <= INSTRUCTIONS(INSTRUCTIONS_SIZE-OPCODE_SIZE-1 downto INSTRUCTIONS_
 control_Desvio(6) <= Sinais_Controle(12);
 control_Desvio(5) <= Sinais_Controle(11);
 control_Desvio(4) <= Sinais_Controle(10);
-control_Desvio(3) <= Sinais_Controle(9);
-control_Desvio(2) <= Sinais_Controle(8);
-control_Desvio(1) <= flag_lt_out;
-control_Desvio(0) <= flag_eq_out;
+control_Desvio(3) <= Sinais_Controle(9); -- JLT
+control_Desvio(2) <= Sinais_Controle(8); -- JEQ
+control_Desvio(1) <= flag_lt_out; -- FLAG LT
+control_Desvio(0) <= flag_eq_out; -- FLAG EQ
 
 -- -- Retorno
 enable_RET <= Sinais_Controle(13);
@@ -183,6 +185,9 @@ DATA_ADDRESS <= imediato_address;
 -- Enable write/read from RAM
 WR <= Sinais_Controle(0);
 RD <= Sinais_Controle(1);
+
+sig_JLT <= Sinais_Controle(9);
+sig_LT <= flag_lt_out;
 --------------------------------------------------------------
 
 end architecture;

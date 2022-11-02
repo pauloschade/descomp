@@ -35,6 +35,9 @@ entity Projeto1 is
 	 KEY : in std_logic_vector(KEYS_N-2 downto 0);
 	 FPGA_RESET_N : in std_logic;
 	 
+	 CLR_ONE : out std_logic;
+	 ENABLE_ONE : out std_logic;
+	 
 	 
 	 HEX0 : out std_logic_vector(HEX_SIZE-1 downto 0); 
 	 HEX1 : out std_logic_vector(HEX_SIZE-1 downto 0);
@@ -45,12 +48,16 @@ entity Projeto1 is
 	 
 	 LEDR : out std_logic_vector(LED_N-1 downto 0);
 	 
+	 LT : out std_logic;
+	 JLT : out std_logic;
+	 
 	 BLOCK_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 ADDRESSES_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 ROM_ADDR : out std_logic_vector(ADDRESS_SIZE-1 downto 0);
 	 CPU_IN : out std_logic_vector(DATA_SIZE-1 downto 0)
   );
 end entity;
+
 
 
 architecture arquitetura of Projeto1 is
@@ -115,7 +122,7 @@ gravar:  if simulacao generate
 CLK <= KEY_IN;                       
 else generate
 CLK <= CLOCK_50;
---detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
+-- detectorSub0: work.edgeDetector(bordaSubida) port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
 end generate;
 
 
@@ -142,6 +149,8 @@ CPU : entity work.CPU   generic map (DATA_SIZE => DATA_SIZE, ADDRESS_SIZE => ADD
 				 ROM_ADDRESS => rom_address,
 				 DATA_OUT => cpu_data_out,
 				 DATA_ADDRESS => data_address,
+				 sig_JLT => JLT,
+				 sig_LT => LT,
 				 WR => wr,
 				 RD => rd
 			 );
@@ -239,9 +248,9 @@ data_in <= ram_data_out;
 data_in <= keys_data_out;
 data_in <= sw_data_out;
 data_in <= data_out_1sec;
--- ++++++++++++++++++++++++++++++++++++++++++
-		 
-clr_1 <= wr and
+-- ++++++++++++++++++++++++++++++++++++++++++]
+clr_0 <= wr and
+		 data_address(0) and
 		 data_address(1) and
 		 data_address(2) and
 		 data_address(3) and
@@ -251,13 +260,21 @@ clr_1 <= wr and
 		 data_address(7) and
 		 data_address(8);
 		 
-clr_0 <= data_address(0) and
-			clr_1;
+clr_1 <= wr and
+		 (not(data_address(0))) and
+		 data_address(1) and
+		 data_address(2) and
+		 data_address(3) and
+		 data_address(4) and
+		 data_address(5) and
+		 data_address(6) and
+		 data_address(7) and
+		 data_address(8);
 
 -- 509
 clr_1sec <= wr and
 		 data_address(0) and
-		 not(data_address(1)) and
+		 (not(data_address(1))) and
 		 data_address(2) and
 		 data_address(3) and
 		 data_address(4) and
@@ -267,9 +284,9 @@ clr_1sec <= wr and
 		 data_address(8);
 
 -- 508 
-enable_1sec <= wr and
-		 not(data_address(0)) and 
-		 not(data_address(1)) and
+enable_1sec <= rd and
+		 (not(data_address(0))) and 
+		 (not(data_address(1))) and
 		 data_address(2) and
 		 data_address(3) and
 		 data_address(4) and
@@ -281,13 +298,15 @@ enable_1sec <= wr and
 
 -------------------- OUTPUT TEST ----------------------------
 CPU_IN <= data_in;
-BLOCK_OUT <= decoder_block_out;
+BLOCK_OUT <= data_out_1sec;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
 
-LEDR(DATA_SIZE-1 downto 0) <= led_R;
-LEDR(8) <= led_8;
-LEDR(9) <= led_9;
+CLR_ONE <= clr_1sec;
+ENABLE_ONE <= enable_1sec;
+
+LEDR(DATA_SIZE downto 0) <= rom_address;
+LEDR(9) <= enable_1sec;
 -------------------------------------------------------------
 
 end architecture;

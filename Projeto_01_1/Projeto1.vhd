@@ -24,7 +24,7 @@ entity Projeto1 is
 	 HEX_SIZE : natural := 7;
 	 
 	 
-	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
@@ -47,6 +47,9 @@ entity Projeto1 is
 	 HEX5 : out std_logic_vector(HEX_SIZE-1 downto 0);
 	 
 	 LEDR : out std_logic_vector(LED_N-1 downto 0);
+	 
+	 LT : out std_logic;
+	 JLT : out std_logic;
 	 
 	 BLOCK_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 ADDRESSES_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
@@ -146,6 +149,8 @@ CPU : entity work.CPU   generic map (DATA_SIZE => DATA_SIZE, ADDRESS_SIZE => ADD
 				 ROM_ADDRESS => rom_address,
 				 DATA_OUT => cpu_data_out,
 				 DATA_ADDRESS => data_address,
+				 sig_JLT => JLT,
+				 sig_LT => LT,
 				 WR => wr,
 				 RD => rd
 			 );

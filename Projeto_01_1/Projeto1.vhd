@@ -24,7 +24,7 @@ entity Projeto1 is
 	 HEX_SIZE : natural := 7;
 	 
 	 
-	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
@@ -34,6 +34,9 @@ entity Projeto1 is
 	 
 	 KEY : in std_logic_vector(KEYS_N-2 downto 0);
 	 FPGA_RESET_N : in std_logic;
+	 
+	 CLR_ONE : out std_logic;
+	 ENABLE_ONE : out std_logic;
 	 
 	 
 	 HEX0 : out std_logic_vector(HEX_SIZE-1 downto 0); 
@@ -276,7 +279,7 @@ clr_1sec <= wr and
 		 data_address(8);
 
 -- 508 
-enable_1sec <= wr and
+enable_1sec <= rd and
 		 (not(data_address(0))) and 
 		 (not(data_address(1))) and
 		 data_address(2) and
@@ -293,6 +296,9 @@ CPU_IN <= data_in;
 BLOCK_OUT <= data_out_1sec;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
+
+CLR_ONE <= clr_1sec;
+ENABLE_ONE <= enable_1sec;
 
 LEDR(DATA_SIZE downto 0) <= rom_address;
 LEDR(9) <= enable_1sec;

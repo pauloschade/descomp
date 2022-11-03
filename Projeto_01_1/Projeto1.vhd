@@ -109,9 +109,11 @@ architecture arquitetura of Projeto1 is
 	 -- clear key 1
 	 signal clr_1 : std_logic;
 	 
-	 signal enable_1sec : std_logic;
-	 signal clr_1sec : std_logic;
-	 signal data_out_1sec : std_logic_vector(DATA_SIZE-1 downto 0);
+	 signal enable_timer : std_logic;
+	 signal clr_timer : std_logic;
+	 signal data_out_timer : std_logic_vector(DATA_SIZE-1 downto 0);
+	 
+	 signal selector_timer : std_logic;
 
 begin
 
@@ -207,12 +209,13 @@ SWITCHES : entity work.switchesController generic map (DATA_SIZE => DATA_SIZE, S
 				DATA_OUT => sw_data_out
 			);
 
-ONE_SEC : entity work.divisorGenerico_e_Interface generic map(DATA_SIZE => DATA_SIZE)
+TIMER : entity work.timerController generic map(DATA_SIZE => DATA_SIZE)
 			port map(
 				CLK => CLK,
-				ENABLE => enable_1sec,
-				CLR => clr_1sec,
-				DATA_OUT => data_out_1sec
+				ENABLE => enable_timer,
+				CLR => clr_timer,
+				SELECTOR => selector_timer,
+				DATA_OUT => data_out_timer
 			);
 
 			
@@ -247,7 +250,7 @@ enable_sw <= rd and not(A5) and decoder_block_out(5);
 data_in <= ram_data_out;
 data_in <= keys_data_out;
 data_in <= sw_data_out;
-data_in <= data_out_1sec;
+data_in <= data_out_timer;
 -- ++++++++++++++++++++++++++++++++++++++++++]
 clr_0 <= wr and
 		 data_address(0) and
@@ -272,7 +275,7 @@ clr_1 <= wr and
 		 data_address(8);
 
 -- 509
-clr_1sec <= wr and
+clr_timer <= wr and
 		 data_address(0) and
 		 (not(data_address(1))) and
 		 data_address(2) and
@@ -284,7 +287,7 @@ clr_1sec <= wr and
 		 data_address(8);
 
 -- 508 
-enable_1sec <= rd and
+enable_timer <= rd and
 		 (not(data_address(0))) and 
 		 (not(data_address(1))) and
 		 data_address(2) and
@@ -294,19 +297,22 @@ enable_1sec <= rd and
 		 data_address(6) and
 		 data_address(7) and
 		 data_address(8);
+		 
+selector_timer <= SW(9);
 -------------------------------------------------------------
 
 -------------------- OUTPUT TEST ----------------------------
 CPU_IN <= data_in;
-BLOCK_OUT <= data_out_1sec;
+BLOCK_OUT <= data_out_timer;
 ADDRESSES_OUT <= decoder_address_out;
 ROM_ADDR <= rom_address;
 
-CLR_ONE <= clr_1sec;
-ENABLE_ONE <= enable_1sec;
+CLR_ONE <= clr_timer;
+ENABLE_ONE <= enable_timer;
 
-LEDR(DATA_SIZE downto 0) <= rom_address;
-LEDR(9) <= enable_1sec;
+LEDR(DATA_SIZE-1 downto 0) <= led_R;
+LEDR(8) <= led_8;
+LEDR(9) <= led_9;
 -------------------------------------------------------------
 
 end architecture;

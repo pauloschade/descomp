@@ -4,7 +4,8 @@ use ieee.numeric_std.all;
 
 entity divisorGenerico_e_Interface is
 	generic (
-         DATA_SIZE : natural := 8
+         DATA_SIZE : natural := 8;
+			DIVISOR : natural := 25000000
 	);
    port(
 		CLK      :   in std_logic;
@@ -20,7 +21,7 @@ architecture interface of divisorGenerico_e_Interface is
 begin
 
 baseTempo: entity work.divisorGenerico
-           generic map (divisor => 25000000)   -- divide por 50MH.
+           generic map (divisor => DIVISOR)   -- divide por 50MH.
            port map (CLK => CLK, saida_clk => saidaclk_reg1seg);
 
 registraUmSegundo: entity work.flipFlop

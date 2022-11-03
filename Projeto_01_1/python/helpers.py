@@ -20,8 +20,8 @@ addr = {
         "KEY3": "355",
         "FPGA_RESET": "356",
 
-        "ENABLE_1SEC" : "508",
-        "CLR_1SEC" : "509",
+        "ENABLE_TIMER" : "508",
+        "CLR_TIMER" : "509",
         "CLR_KEY0" : "511",
         "CLR_KEY1" : "510",
 
@@ -43,5 +43,7 @@ addr = {
         "MEM9": "17",
         "MEM10": "18",
         "LIM_HR0" : "19",
-        "PM_SIG" : "20"
+        "PM_SIG" : "20",
+        "FLAG" : "21",
+        "MEM8": "22"
 }

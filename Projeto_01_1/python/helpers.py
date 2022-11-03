@@ -41,6 +41,7 @@ addr = {
         "MEMAUX": "15",
         "MEMCOMP": "16",
         "MEM9": "17",
-        "LIM_HR0" : "18",
-        "LIM_HR1" : "19"
+        "MEM10": "18",
+        "LIM_HR0" : "19",
+        "PM_SIG" : "20"
 }

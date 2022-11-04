@@ -113,7 +113,7 @@ architecture arquitetura of Projeto1 is
 	 signal clr_timer : std_logic;
 	 signal data_out_timer : std_logic_vector(DATA_SIZE-1 downto 0);
 	 
-	 signal selector_timer : std_logic;
+	 signal selector_timer : std_logic_vector(1 downto 0);
 
 begin
 
@@ -298,7 +298,7 @@ enable_timer <= rd and
 		 data_address(7) and
 		 data_address(8);
 		 
-selector_timer <= SW(9);
+selector_timer <= SW(9) & SW(8);
 -------------------------------------------------------------
 
 -------------------- OUTPUT TEST ----------------------------

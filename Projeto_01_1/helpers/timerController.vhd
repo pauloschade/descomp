@@ -10,7 +10,7 @@ entity timerController is
 		CLK      :   in std_logic;
       ENABLE   :   in std_logic;
       CLR : in std_logic;
-		SELECTOR : in std_logic;
+		SELECTOR : in std_logic_vector(1 downto 0);
       DATA_OUT :   out std_logic_vector(DATA_SIZE-1 downto 0)
 	 );
 end entity;
@@ -19,6 +19,8 @@ architecture comportamento of timerController is
 	
 	signal data_out_1sec : std_logic;
 	signal data_out_faster : std_logic;
+	signal data_out_super : std_logic;
+	signal data_out_blaster : std_logic;
 	signal ula_out : std_logic;
 	signal reg_data : std_logic;
 	--signal temp_out : std_logic_vector(SW_N-1 downto 0);
@@ -30,11 +32,19 @@ baseTempo_1SEC: entity work.divisorGenerico generic map (divisor => 25000000)   
 			  
 baseTempo_FASTER: entity work.divisorGenerico generic map (divisor => 250000)   -- divide por 50MH.
            port map (CLK => CLK, saida_clk => data_out_faster);
+			  
+baseTempo_SUPER: entity work.divisorGenerico generic map (divisor => 25000)   -- divide por 50MH.
+           port map (CLK => CLK, saida_clk => data_out_super);
+			  
+baseTempo_BLASTER: entity work.divisorGenerico generic map (divisor => 2500)   -- divide por 50MH.
+           port map (CLK => CLK, saida_clk => data_out_blaster);
 
 MUX_TEMPO :  entity work.simplemux
 			port map(
 				IN_A => data_out_1sec, 
 				IN_B => data_out_faster,
+				IN_C => data_out_super,
+				IN_D => data_out_blaster,
 				seletor_MUX => SELECTOR,
 				saida_MUX => ula_out
 	);

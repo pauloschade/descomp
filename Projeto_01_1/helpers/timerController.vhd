@@ -30,13 +30,13 @@ begin
 baseTempo_1SEC: entity work.divisorGenerico generic map (divisor => 25000000)   -- divide por 50MH.
            port map (CLK => CLK, saida_clk => data_out_1sec);
 			  
-baseTempo_FASTER: entity work.divisorGenerico generic map (divisor => 250000)   -- divide por 50MH.
+baseTempo_FASTER: entity work.divisorGenerico generic map (divisor => 250000)   -- divide por 0.5MH.
            port map (CLK => CLK, saida_clk => data_out_faster);
 			  
-baseTempo_SUPER: entity work.divisorGenerico generic map (divisor => 25000)   -- divide por 50MH.
+baseTempo_SUPER: entity work.divisorGenerico generic map (divisor => 25000)   -- divide por 50kH.
            port map (CLK => CLK, saida_clk => data_out_super);
 			  
-baseTempo_BLASTER: entity work.divisorGenerico generic map (divisor => 2500)   -- divide por 50MH.
+baseTempo_BLASTER: entity work.divisorGenerico generic map (divisor => 2500)   -- divide por 0.5kH.
            port map (CLK => CLK, saida_clk => data_out_blaster);
 
 MUX_TEMPO :  entity work.simplemux

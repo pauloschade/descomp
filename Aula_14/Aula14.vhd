@@ -16,10 +16,11 @@ entity Aula14 is
     CLOCK_50 : in std_logic;
 	 KEY_IN : in std_logic;
 	 
-	 PC_ADDRR : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 REG1_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 REG2_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 PC_DATA : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 SIG_EXTEN : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 BEQ_AND : out std_logic;
 	 DATA_WR : out std_logic_vector(DATA_SIZE-1 downto 0)
 	 
   );
@@ -68,5 +69,8 @@ ROM : entity work.ROMController generic map (DATA_SIZE => DATA_SIZE)
 				 PC_CURR => PC_DATA,
 				 DATA_OUT => rom_out
 				);
+				
+BEQ_AND <= beq;
+SIG_EXTEN <= sig_ext;
 
 end architecture;

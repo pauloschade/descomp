@@ -38,11 +38,13 @@ architecture comportamento of decoderInstru is
   
   mux_ula_mem <= '1';
   
-  ula_op <= "0001" when (OPCODE = LW) or (OPCODE = SW) else "0000";
+  ula_op <= "0001" when (OPCODE = LW) or (OPCODE = SW) else 
+				"0010" when (OPCODE = BEQ) else 
+				"0000";
   
   mux_rt_imediato <= '1';
   
-  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = SW) or (OPCODE = BEQ) else
+  enable_wr_reg <= '1' when (OPCODE = LW) else
 						 '0';
 						 
   mux_rt_rd <= '0';

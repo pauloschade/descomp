@@ -86,7 +86,8 @@ REGS : entity work.bancoReg generic map (DATA_SIZE => DATA_SIZE, REG_ADDR_SIZE =
 			(  CLK => CLK,
 				ADDR_A => rs, ADDR_B => rt, ADDR_C => rt_or_rd,
 				DATA_WR => data_write_R3,
-				OUT_A => data_out_rs, OUT_B => data_out_rt
+				OUT_A => data_out_rs, OUT_B => data_out_rt,
+				ENABLE_WR => wr_reg
 			);
 			
 

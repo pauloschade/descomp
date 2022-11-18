@@ -6,7 +6,7 @@ entity MUX2x1 is
   port (
     entradaA_MUX, entradaB_MUX : in std_logic;
     seletor_MUX : in std_logic;
-    saida_MUX : out std_logic;
+    saida_MUX : out std_logic
   );
 end entity;
 

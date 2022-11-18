@@ -2,8 +2,8 @@ library ieee;
 use ieee.std_logic_1164.all;
  
 entity ULA1TO31 is
-    port (A : in std_logic;
-          B : in std_logic;
+    port (IN_A : in std_logic;
+          IN_B : in std_logic;
           CARRYIN : in std_logic;
           SLT : in std_logic;
           INV_B : in std_logic;
@@ -22,18 +22,18 @@ architecture Behavioral of ULA1TO31 is
     begin
 
         -- Invert
-        MUX2x1 :  entity work.MUX2x1 generic map (larguraDados => 1)
+        MUX2x1 :  entity work.MUX2x1
         port map( 
-            entradaA_MUX => B,
-            entradaB_MUX =>  not B,
+            entradaA_MUX => IN_B,
+            entradaB_MUX =>  not IN_B,
             seletor_MUX => INV_B,
             saida_MUX => inv_out);
  
         -- Multiplex OP
-        MUX4x1 :  entity work.MUX4x1  generic map (larguraDados => 1)
+        MUX4x1 :  entity work.MUX4x1
         port map( 
-            IN_A => inv_out and A,
-            IN_B => inv_out or A,
+            IN_A => inv_out and IN_A,
+            IN_B => inv_out or IN_A,
             IN_C => sum_out,
             IN_D => SLT,
             seletor_MUX => SELECTOR,
@@ -41,10 +41,10 @@ architecture Behavioral of ULA1TO31 is
             );
 
         -- Somador
-        FULLADDER: entity work.FullAdder generic map (larguraDados => 1)
+        FULLADDER: entity work.FullAdder
         port map(
-            A => A,
-            B => inv_out,
+            IN_A => IN_A,
+            IN_B => inv_out,
             CarryIn => CARRYIN,
             Sum => sum_out,
             CarryOut => CARRYOUT

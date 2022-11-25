@@ -16,10 +16,10 @@ end entity;
 
 architecture assincrona OF ROMMIPS IS
 
-  constant ADD   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100011";
-  constant SUB   : std_logic_vector(FUNC_SIZE-1 downto 0) := "101011";
-  constant AND_R : std_logic_vector(FUNC_SIZE-1 downto 0) := "000100";
-  constant OR_R  : std_logic_vector(FUNC_SIZE-1 downto 0) := "000100";
+  constant ADD   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100000";
+  constant SUB   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100010";
+  constant AND_R : std_logic_vector(FUNC_SIZE-1 downto 0) := "100100";
+  constant OR_R  : std_logic_vector(FUNC_SIZE-1 downto 0) := "100101";
   constant SLT  : std_logic_vector(FUNC_SIZE-1 downto 0)  := "101010";
   
   
@@ -59,9 +59,9 @@ architecture assincrona OF ROMMIPS IS
 		  tmp(5) :=  ZERO & t1 & t2 & t0 & ZERO_5 & SLT;
 		  tmp(6) :=  ZERO & t0 & t2 & t0 & ZERO_5 & ADD;
 		  tmp(7) :=   BEQ & t0 & t3 & 16x"FFFE";
-		  tmp(6) :=  ZERO & t0 & t2 & t0 & ZERO_5 & ADD;
-		  tmp(8) :=   BEQ & t0 & t3 & 16x"FFFE";
-		  tmp(17) :=   JMP & "00000000000000000000000000";
+		  tmp(8) :=  ZERO & t0 & t2 & t0 & ZERO_5 & ADD;
+		  tmp(9) :=   BEQ & t0 & t3 & 16x"FFFE";
+		  tmp(10) :=   JMP & "00000000000000000000000000";
 		  return tmp;
     end initMemory;
 	 

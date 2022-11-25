@@ -19,15 +19,15 @@ architecture comportamento of decoder_func_ULA is
   constant ADD_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0010";
   constant SUB_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0110";
   
-  constant OR_ULA : std_logic_vector(DATA_SIZE-1 downto 0)    := "0010";
+  constant OR_ULA : std_logic_vector(DATA_SIZE-1 downto 0)    := "0001";
   constant AND_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0000";
   constant SLT_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0111";
   
   
-  constant ADD   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100011";
-  constant SUB   : std_logic_vector(FUNC_SIZE-1 downto 0) := "101011";
-  constant AND_R : std_logic_vector(FUNC_SIZE-1 downto 0) := "000100";
-  constant OR_R  : std_logic_vector(FUNC_SIZE-1 downto 0) := "000100";
+  constant ADD   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100000";
+  constant SUB   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100010";
+  constant AND_R : std_logic_vector(FUNC_SIZE-1 downto 0) := "100100";
+  constant OR_R  : std_logic_vector(FUNC_SIZE-1 downto 0) := "100101";
   constant SLT  : std_logic_vector(FUNC_SIZE-1 downto 0)  := "101010";
   
   begin

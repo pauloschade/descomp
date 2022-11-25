@@ -16,7 +16,7 @@ entity Projeto2 is
 	 LED_N : natural := 10;
 	 SW_N : natural := 10;
 	 
-	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
@@ -31,19 +31,20 @@ entity Projeto2 is
 	 
 	 SW : in std_logic_vector(SW_N-1 downto 0);
 	 
-	 LEDR : out std_logic_vector(LED_N-1 downto 0);
+	 KEY : in std_logic_vector(3 downto 0);
 	 
+	 LEDR : out std_logic_vector(LED_N-1 downto 0)
 	 ------------------- TEST -----------------------------
-	 REG1_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 REG2_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 PC_DATA : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 ULA_DATA_OUTER : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 SIG_EXTEN : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 BEQ_OR_JMP : out std_logic;
-	 OPCODE_OUTPUT : out std_logic_vector(OPCODE_SIZE-1 downto 0);
-	 ULA_OPERATION : out std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
-	 CONTROL_DATA_IN : out std_logic_vector(CONTROL_SIZE-1 downto 0);
-	 DATA_WR : out std_logic_vector(DATA_SIZE-1 downto 0)
+--	 REG1_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
+--	 REG2_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
+--	 PC_DATA : out std_logic_vector(DATA_SIZE-1 downto 0);
+--	 ULA_DATA_OUTER : out std_logic_vector(DATA_SIZE-1 downto 0);
+--	 SIG_EXTEN : out std_logic_vector(DATA_SIZE-1 downto 0);
+--	 BEQ_OR_JMP : out std_logic;
+--	 OPCODE_OUTPUT : out std_logic_vector(OPCODE_SIZE-1 downto 0);
+--	 ULA_OPERATION : out std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
+--	 CONTROL_DATA_IN : out std_logic_vector(CONTROL_SIZE-1 downto 0);
+--	 DATA_WR : out std_logic_vector(DATA_SIZE-1 downto 0)
 	 
   );
 end entity;
@@ -82,9 +83,9 @@ begin
 gravar:  if simulacao generate
 CLK <= KEY_IN;                       
 else generate
---detectorSub0: work.edgeDetector(bordaSubida)
---        port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
-CLK <= KEY_IN;
+detectorSub0: work.edgeDetector(bordaSubida)
+        port map (clk => CLOCK_50, entrada => (not KEY(2)), saida => CLK);
+--CLK <= KEY_IN;
 end generate;
 
 CPU : entity work.CPU   generic map (DATA_SIZE => DATA_SIZE, OPCODE_SIZE => OPCODE_SIZE, CONTROL_SIZE => CONTROL_SIZE, FUNC_SIZE => FUNC_SIZE, ULA_SELECTOR_SIZE => ULA_SELECTOR_SIZE)
@@ -99,9 +100,9 @@ CPU : entity work.CPU   generic map (DATA_SIZE => DATA_SIZE, OPCODE_SIZE => OPCO
 				 
 				 ---TEST
 				 data_ula_out => ula_out,
-				 data_r1_out  => REG1_OUT,
-				 data_r2_out  => REG2_OUT,
-				 data_rwr_out => DATA_WR,
+--				 data_r1_out  => REG1_OUT,
+--				 data_r2_out  => REG2_OUT,
+--				 data_rwr_out => DATA_WR,
 				 
 				 BEQ_AND_ZERO => beq
 				);
@@ -131,11 +132,11 @@ HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
 mux_beq_jmp_selector <= control(CONTROL_SIZE-1);
 imediato <= rom_out(IMEDIATO_SIZE-1 downto 0);
 ------------------------------------------------------
-BEQ_OR_JMP <= control(CONTROL_SIZE-1);
-SIG_EXTEN <= sig_ext;
-OPCODE_OUTPUT <= opcode;
-PC_DATA <= pc;
-ULA_DATA_OUTER <= ula_out;
-CONTROL_DATA_IN <= control;
+--BEQ_OR_JMP <= control(CONTROL_SIZE-1);
+--SIG_EXTEN <= sig_ext;
+--OPCODE_OUTPUT <= opcode;
+--PC_DATA <= pc;
+--ULA_DATA_OUTER <= ula_out;
+--CONTROL_DATA_IN <= control;
 ------------------------------------------------------
 end architecture;

@@ -46,7 +46,7 @@ architecture comportamento of controlUnit is
   
   mux_rt_imediato <= '0' when (OPCODE = IS_ZERO) or (OPCODE = BEQ) else '1';
   
-  enable_wr_reg <= '1' when (OPCODE = LW) else '0';
+  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO) else '0';
 						 
   mux_rt_rd <= '1' when (OPCODE = IS_ZERO) else '0';
   

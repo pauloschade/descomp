@@ -37,9 +37,12 @@ entity Projeto2 is
 	 REG1_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 REG2_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 PC_DATA : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 ULA_DATA_OUTER : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 SIG_EXTEN : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 BEQ_OR_JMP : out std_logic;
 	 OPCODE_OUTPUT : out std_logic_vector(OPCODE_SIZE-1 downto 0);
+	 ULA_OPERATION : out std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
+	 CONTROL_DATA_IN : out std_logic_vector(CONTROL_SIZE-1 downto 0);
 	 DATA_WR : out std_logic_vector(DATA_SIZE-1 downto 0)
 	 
   );
@@ -123,12 +126,16 @@ MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
 HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
 				port map(DATA_IN => signal_teste, HEX0 => HEX0, HEX1 => HEX1, HEX2 => HEX2, HEX3 => HEX3, HEX4 => HEX4, HEX5 => HEX5, LED_0_3 => LEDR(3 downto 0), LED_4_7 => LEDR(7 downto 4));
 
+				
+------------------------------------------------------			
+mux_beq_jmp_selector <= control(CONTROL_SIZE-1);
+imediato <= rom_out(IMEDIATO_SIZE-1 downto 0);
 ------------------------------------------------------
 BEQ_OR_JMP <= control(CONTROL_SIZE-1);
 SIG_EXTEN <= sig_ext;
-mux_beq_jmp_selector <= control(CONTROL_SIZE-1);
-imediato <= rom_out(IMEDIATO_SIZE-1 downto 0);
 OPCODE_OUTPUT <= opcode;
 PC_DATA <= pc;
+ULA_DATA_OUTER <= ula_out;
+CONTROL_DATA_IN <= control;
 ------------------------------------------------------
 end architecture;

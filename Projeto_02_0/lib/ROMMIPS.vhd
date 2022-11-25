@@ -59,9 +59,7 @@ architecture assincrona OF ROMMIPS IS
 		  tmp(5) :=  ZERO & t1 & t2 & t0 & ZERO_5 & SLT;
 		  tmp(6) :=  ZERO & t0 & t2 & t0 & ZERO_5 & ADD;
 		  tmp(7) :=   BEQ & t0 & t3 & 16x"FFFE";
-		  tmp(8) :=  ZERO & t0 & t2 & t0 & ZERO_5 & ADD;
-		  tmp(9) :=   BEQ & t0 & t3 & 16x"FFFE";
-		  tmp(10) :=   JMP & "00000000000000000000000000";
+		  tmp(8) :=   JMP & "00000000000000000000000000";
 		  return tmp;
     end initMemory;
 	 

@@ -59,8 +59,12 @@ MUX_BEQ_JMP : entity work.generic_MUX_2x1  generic map (DATA_SIZE => DATA_SIZE)
 MUX_JR : entity work.generic_MUX_2x1  generic map (DATA_SIZE => DATA_SIZE)
 	port map (IN_A => beq_jmp_addr, IN_B => JR_ADDR, MUX_SELECTOR => MUX_JR_SELECTOR, DATA_OUT => pc_in);
 	
-ROM : entity work.ROMMIPS   generic map (dataWidth => DATA_SIZE, addrWidth => DATA_SIZE)
+--ROM : entity work.ROMMIPS   generic map (dataWidth => DATA_SIZE, addrWidth => DATA_SIZE)
+--          port map (ADDR => pc_out, DATA_OUT => DATA_OUT);
+
+ROM : entity work.ROMMIPS_MIF   generic map  (dataWidth => DATA_SIZE, addrWidth => DATA_SIZE)
           port map (ADDR => pc_out, DATA_OUT => DATA_OUT);
+
 	
 
 --------------------------------------------------------------------------------

@@ -30,8 +30,11 @@ architecture comportamento of controlUnit is
   
   constant LUI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001111";
   
+  constant ADDI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001000";
   constant ANDI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001100";
-  constant ORI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001101";
+  constant ORI  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001101";
+  constant SLTI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001010";
+  
   
   alias enable_wr_ram : std_logic is DATA_OUT(0);
   alias enable_rd_ram : std_logic is DATA_OUT(1);
@@ -55,14 +58,14 @@ architecture comportamento of controlUnit is
   
   beqs <= '1' when (OPCODE = BEQ) else '0';
   
-  mux_ula_mem <= "00" when (OPCODE = IS_ZERO) else
+  mux_ula_mem <= "00" when (OPCODE = IS_ZERO) or (OPCODE = ORI) or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI)  else
 					  "10" when (OPCODE = JAL) else
 					  "11" when (OPCODE = LUI) else
 					  "01";
    
   mux_rt_imediato <= '0' when (OPCODE = IS_ZERO) or (OPCODE = BEQ) else '1';
   
-  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO) else '0';
+  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO) or (OPCODE = ORI) or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI) else '0';
   
   ori_andi <= '1' when (OPCODE = ORI) or (OPCODE = ANDI) else '0';
 						 

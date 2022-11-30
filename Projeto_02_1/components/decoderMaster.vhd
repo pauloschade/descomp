@@ -20,7 +20,7 @@ end entity;
 
 architecture comportamento of decoderMaster is
 
-  constant JSR : std_logic_vector(FUNC_SIZE-1 downto 0) := "001000";
+  constant JR : std_logic_vector(FUNC_SIZE-1 downto 0) := "001000";
 
   signal is_type_r : std_logic;
   
@@ -29,7 +29,7 @@ architecture comportamento of decoderMaster is
   
   begin
   
-CONTROL_UNIT : entity work.controlUnit generic map(OPCODE_SIZE => OPCODE_SIZE, CONTROL_SIZE => CONTROL_SIZE-1)
+CONTROL_UNIT : entity work.controlUnit generic map(OPCODE_SIZE => OPCODE_SIZE, CONTROL_SIZE => (CONTROL_SIZE-1))
 					port map(OPCODE => OPCODE, TYPE_R => is_type_r, DATA_OUT => CONTROL_DATA(CONTROL_SIZE-2 downto 0));
 
 DECODER_OPCODE : entity work.decoder_opcode_ULA generic map (OPCODE_SIZE => OPCODE_SIZE, DATA_SIZE => ULA_SELECTOR_SIZE)
@@ -41,6 +41,6 @@ DECODER_FUNC : entity work.decoder_func_ULA generic map (FUNC_SIZE => FUNC_SIZE,
 MUX_ULA_OP : entity work.generic_MUX_2x1  generic map (DATA_SIZE => ULA_SELECTOR_SIZE)
 	port map (IN_A => opcode_ula_op, IN_B => func_ula_op, MUX_SELECTOR => is_type_r, DATA_OUT => ULA_OP);
 
-CONTROL_DATA(CONTROL_SIZE-1)	<= '1' when (FUNC = JSR) else '0';
+CONTROL_DATA(12)	<= '1' when (FUNC = JR and is_type_r = '1') else '0';
   
 end architecture;

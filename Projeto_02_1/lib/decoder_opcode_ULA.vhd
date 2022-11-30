@@ -21,10 +21,12 @@ architecture comportamento of decoder_opcode_ULA is
   constant OR_ULA  : std_logic_vector(DATA_SIZE-1 downto 0)   := "0001";
   constant ADD_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0010";
   constant SUB_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0110";
+  constant SLT_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0111";
   
   constant ADDI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001000";
   constant ANDI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001100";
-  constant ORI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001101";
+  constant ORI  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001101";
+  constant SLTI : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001010";
   
   constant LW  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "100011";
   constant SW  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "101011";
@@ -36,6 +38,7 @@ architecture comportamento of decoder_opcode_ULA is
 				  OR_ULA  when (OPCODE = ORI)  else
 				  ADD_ULA when (OPCODE = LW) or (OPCODE = SW) or (OPCODE = ADDI) else 
 				  SUB_ULA when (OPCODE = BEQ) else
+				  SLT_ULA when (OPCODE = SLTI) else
 				  "0000";
   
 end architecture;

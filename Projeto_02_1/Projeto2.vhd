@@ -16,7 +16,7 @@ entity Projeto2 is
 	 LED_N : natural := 10;
 	 SW_N : natural := 10;
 	 
-	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;

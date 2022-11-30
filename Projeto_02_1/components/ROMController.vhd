@@ -35,7 +35,7 @@ architecture arquitetura of ROMController is
 	signal pc_plus_sig_ext : std_logic_vector(DATA_SIZE-1 downto 0);
 	
 	---------------------- TYPE J ---------------------------------
-	signal imediato_shifted : std_logic_vector(IMEDIATO_SIZE-1 downto 0);
+	--signal imediato_shifted : std_logic_vector(IMEDIATO_SIZE-1 downto 0);
 	signal jmp_addr : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal beq_jmp_addr  : std_logic_vector(DATA_SIZE-1 downto 0);
 
@@ -71,11 +71,11 @@ ROM : entity work.ROMMIPS_MIF   generic map  (dataWidth => DATA_SIZE, addrWidth 
 
 --------- jmp a -----------
 jmp_addr(DATA_SIZE-1 downto 28) <= pc_plus_4(DATA_SIZE-1 downto 28);
-jmp_addr(27 downto 2) <= imediato_shifted(IMEDIATO_SIZE-1 downto 0);
+jmp_addr(27 downto 2) <= IMEDIATO(IMEDIATO_SIZE-1 downto 0);
 jmp_addr(1 downto 0) <= "00";
 ---------------------------
 --------- shift -----------
-imediato_shifted <= std_logic_vector(shift_left(unsigned(IMEDIATO), SHIFT_AMMOUNT));
+--imediato_shifted <= std_logic_vector(shift_left(unsigned(IMEDIATO), SHIFT_AMMOUNT));
 sig_ext_shifted <= std_logic_vector(shift_left(unsigned(SIG_EXT), SHIFT_AMMOUNT));
 ---------------------------
 --------------------------------------------------------------------------------

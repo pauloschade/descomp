@@ -65,13 +65,16 @@ architecture comportamento of controlUnit is
    
   mux_rt_imediato <= '0' when (OPCODE = IS_ZERO) or (OPCODE = BEQ) else '1';
   
-  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO) or (OPCODE = ORI) or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI) else '0';
+  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO) or (OPCODE = ORI) 
+								or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI) 
+								or (OPCODE = JAL)  or (OPCODE = LUI)
+				  else '0';
   
   ori_andi <= '1' when (OPCODE = ORI) or (OPCODE = ANDI) else '0';
 						 
   mux_r3 <= "01" when (OPCODE = IS_ZERO) else "00";
   
-  mux_beq_jmp <= '1' when (OPCODE = JMP) else '0';
+  mux_beq_jmp <= '1' when (OPCODE = JMP) or (OPCODE = JAL) else '0';
   
   --mux_jr <= '1' when (OPCODE = JMP) else '0';
   

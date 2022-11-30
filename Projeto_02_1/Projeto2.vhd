@@ -16,7 +16,7 @@ entity Projeto2 is
 	 LED_N : natural := 10;
 	 SW_N : natural := 10;
 	 
-	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
+	 simulacao : boolean := TRUE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
     CLOCK_50 : in std_logic;
@@ -37,7 +37,7 @@ entity Projeto2 is
 	 ------------------- TEST -----------------------------
 --	 REG1_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
 --	 REG2_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
---	 PC_DATA : out std_logic_vector(DATA_SIZE-1 downto 0);
+--	 PC_DATA  : out std_logic_vector(DATA_SIZE-1 downto 0)
 --	 ULA_DATA_OUTER : out std_logic_vector(DATA_SIZE-1 downto 0);
 --	 SIG_EXTEN : out std_logic_vector(DATA_SIZE-1 downto 0);
 --	 BEQ_OR_JMP : out std_logic;
@@ -76,6 +76,8 @@ architecture arquitetura of Projeto2 is
 	signal pc : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal pc_plus_4_jal : std_logic_vector(DATA_SIZE-1 downto 0);
 	
+	signal reg1_out : std_logic_vector(DATA_SIZE-1 downto 0);
+	
 begin
 
 -- Instanciando os componentes:
@@ -102,11 +104,13 @@ CPU : entity work.CPU   generic map (DATA_SIZE => DATA_SIZE, OPCODE_SIZE => OPCO
 				 FUNC => func,
 				 ULA_OP => ula_op,
 				 
-				 ---TEST
+				 
 				 data_ula_out => ula_out,
---				 data_r1_out  => REG1_OUT,
+				 data_r1_out  => reg1_out,
+				 ---TEST
 --				 data_r2_out  => REG2_OUT,
 --				 data_rwr_out => DATA_WR,
+--				 ------
 				 
 				 IS_BEQ_OR_BNE => bne_or_beq
 				);
@@ -117,8 +121,8 @@ ROM : entity work.ROMController generic map (DATA_SIZE => DATA_SIZE, IMEDIATO_SI
 				 MUX_SELECTOR => bne_or_beq,
 				 IMEDIATO => imediato,
 				 MUX_BEQ_JMP_SELECTOR => mux_beq_jmp_selector,
-				 MUX_JR_SELECTOR => mux_jr_selector, -- TODO
-				 JR_ADDR => 32x"00", --TODO
+				 MUX_JR_SELECTOR => mux_jr_selector,
+				 JR_ADDR => reg1_out,
 				 PC_CURR => pc,
 				 PC_PLUS_4_JAL => pc_plus_4_jal,
 				 DATA_OUT => rom_out

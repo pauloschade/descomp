@@ -31,13 +31,14 @@ architecture comportamento of decoder_opcode_ULA is
   constant LW  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "100011";
   constant SW  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "101011";
   constant BEQ : std_logic_vector(OPCODE_SIZE-1 downto 0) := "000100";
+  constant BNE : std_logic_vector(OPCODE_SIZE-1 downto 0) := "000101";
   
   begin
   
   DATA_OUT <= AND_ULA when (OPCODE = ANDI) else
 				  OR_ULA  when (OPCODE = ORI)  else
 				  ADD_ULA when (OPCODE = LW) or (OPCODE = SW) or (OPCODE = ADDI) else 
-				  SUB_ULA when (OPCODE = BEQ) else
+				  SUB_ULA when (OPCODE = BEQ) or (OPCODE = BNE) else
 				  SLT_ULA when (OPCODE = SLTI) else
 				  "0000";
   

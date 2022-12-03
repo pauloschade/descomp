@@ -59,13 +59,16 @@ architecture arquitetura of ID_PIPELINE is
 	signal control : std_logic_vector(CONTROL_SIZE-1 downto 0);
 	
 	signal imediato : std_logic_vector(IMEDIATO_SIZE-1 downto 0);
-	signal ori_andi : std_logic_vector;
+	signal ori_andi : std_logic;
 	
 	--------------------- REGS ---------------------------
 	signal rd : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
 	signal rs : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
 	signal rt : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
 	------------------------------------------------------
+	signal opcode : std_logic_vector(OPCODE_SIZE-1 downto 0);
+	signal func : std_logic_vector(FUNC_SIZE-1 downto 0);
+	
 
 begin
 
@@ -100,7 +103,7 @@ EX_SELECTOR_R3 <= control(10 downto 9);
 ----------- REGS -----------------------
 -- ADDR
 ADDR_RT <= rt;
-ADDR_RS <= rs;
+ADDR_RD <= rd;
 
 -- DATA
 
@@ -111,11 +114,11 @@ ADDR_RS <= rs;
 -------------------------------------------------------------------------------	
 ---------- INSTRCUTION ---------------
 imediato <= INSTRUCTION(15 downto 0);
-OPCODE <= INSTRUCTION(31 downto 26);
+opcode <= INSTRUCTION(31 downto 26);
 rs <= INSTRUCTION(25 downto 21);
 rt <= INSTRUCTION(20 downto 16);
 rd <= INSTRUCTION(15 downto 11);
-FUNC <= INSTRUCTION(5 downto 0);
+func <= INSTRUCTION(5 downto 0);
 --------------------------------------
 
 ------------- OTHER ------------------

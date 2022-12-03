@@ -25,7 +25,7 @@ entity WB_PIPELINE is
 	 SELECTOR_ULA_MEM : in std_logic_vector(1 downto 0);
 	
 	 ---------- OUTPUTS -------------
-	 DATA_WR				: in std_logic_vector(DATA_SIZE-1 downto 0)
+	 DATA_WR				: out std_logic_vector(DATA_SIZE-1 downto 0)
 	 
   );
 end entity;
@@ -40,11 +40,6 @@ begin
 			 
 MUX_ULA_OR_RAM : entity work.muxGenerico4x1  generic map (DATA_SIZE => DATA_SIZE)
 	port map (IN_A => ULA_RESULT, IN_B => DATA_RD, IN_C => JAL_ADDR, IN_D => LUI_ADDR, SELECTOR => SELECTOR_ULA_MEM, DATA_OUT => DATA_WR );
-			 
-			 
--------------------------------------
--------------- OUTPUTS --------------
-SELECTOR_BRANCH <= branch_sig and BEQ_OR_BNE;
--------------------------------------
+			
 
 end architecture;

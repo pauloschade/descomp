@@ -87,7 +87,7 @@ jmp_addr(1 downto 0) <= "00";
 
 ------------PC DATA OUT-----------
 PC_CURR <= pc_out;
-PC_PLUS_4_OUT <= pc_plus_4;
+EXEC_PC_PLUS_4_OUT <= pc_plus_4;
 ----------------------------------
 
 end architecture;

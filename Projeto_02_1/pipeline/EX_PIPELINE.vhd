@@ -1,4 +1,5 @@
 library ieee;
+use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
 entity EX_PIPELINE is
@@ -16,7 +17,7 @@ entity EX_PIPELINE is
   port   (
 	 CLK : in std_logic;
 	 --	GENERAL
-	 
+	 PC_PLUS_4 : in std_logic_vector(DATA_SIZE-1 downto 0);
 	 --	ID
 	 SELECTOR_R3 : in std_logic_vector(1 downto 0);
 	 ULA_OP : in std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
@@ -33,7 +34,7 @@ entity EX_PIPELINE is
 	 -- OUT
 	 --	MEM
 	 MEM_SIG_EXT_PC_PLUS_4 : out std_logic_vector(DATA_SIZE-1 downto 0);
-	 MEM_ZERO_ULA : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 MEM_ZERO_ULA : out std_logic;
 	 MEM_ULA_RESULT : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 
 	 --	WB
@@ -46,11 +47,13 @@ end entity;
 architecture arquitetura of EX_PIPELINE is
 
 signal rt_or_imediato : std_logic_vector(DATA_SIZE-1 downto 0);
+signal sig_ext_shifted : std_logic_vector(DATA_SIZE-1 downto 0);
+
 
 begin
 
 SOMADOR :  entity work.somadorGenerico  generic map (DATA_SIZE => DATA_SIZE)
-	port map( IN_A => pc_plus_4, IN_B => sig_ext_shifted, DATA_OUT => pc_plus_sig_ext);
+	port map( IN_A => PC_PLUS_4, IN_B => sig_ext_shifted, DATA_OUT => MEM_SIG_EXT_PC_PLUS_4);
 
 MUX_RT_OR_IMEDIATO : entity work.generic_MUX_2x1  generic map (DATA_SIZE => DATA_SIZE)
 	port map ( IN_A => DATA_R2, IN_B => SIG_EXT, MUX_SELECTOR => SELECTOR_RT_OR_IMEDIATO, DATA_OUT => rt_or_imediato );
@@ -60,5 +63,7 @@ ULA : entity work.ULASomaSub  generic map(DATA_SIZE => DATA_SIZE, SELECTOR_SIZE 
 
 MUX_RT_RD_JAL : entity work.muxGenerico4x1  generic map (DATA_SIZE => REG_ADDR_SIZE)
 	port map ( IN_A => ADDR_RT, IN_B => ADDR_RD, IN_C => 5x"1F", IN_D => 5x"00", SELECTOR => SELECTOR_R3, DATA_OUT => WB_ADDR_REG );
+
+sig_ext_shifted <= std_logic_vector(shift_left(unsigned(SIG_EXT), 2));
 
 end architecture;

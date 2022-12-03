@@ -6,8 +6,7 @@ entity IF_PIPELINE is
   -- Total de bits das entradas e saidas
   generic (
   	 DATA_SIZE : natural := 32;
-	 IMEDIATO_SIZE : natural := 26;
-	 SHIFT_AMMOUNT : natural := 2
+	 IMEDIATO_SIZE : natural := 26
   );
   port   (
 	 CLK : in std_logic;

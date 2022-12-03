@@ -91,46 +91,7 @@ detectorSub0: work.edgeDetector(bordaSubida)
 --CLK <= KEY_IN;
 end generate;
 
-CPU : entity work.CPU   generic map (DATA_SIZE => DATA_SIZE, OPCODE_SIZE => OPCODE_SIZE, CONTROL_SIZE => CONTROL_SIZE, FUNC_SIZE => FUNC_SIZE, ULA_SELECTOR_SIZE => ULA_SELECTOR_SIZE)
-			 port map (
-				 -- IN
-				 CLK => CLK,
-				 INSTRUCTION => rom_out,
-				 CONTROL => control,
-				 SIG_EXT_OUT => sig_ext,
-				 JAL_ADDR => pc_plus_4_jal,
-				 -- OUT
-				 OPCODE => opcode,
-				 FUNC => func,
-				 ULA_OP => ula_op,
-				 
-				 
-				 data_ula_out => ula_out,
-				 data_r1_out  => reg1_out,
-				 ---TEST
---				 data_r2_out  => REG2_OUT,
---				 data_rwr_out => DATA_WR,
---				 ------
-				 
-				 IS_BEQ_OR_BNE => bne_or_beq
-				);
-ROM : entity work.ROMController generic map (DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
-			 port map (
-				 CLK => CLK,
-				 SIG_EXT => sig_ext,
-				 MUX_SELECTOR => bne_or_beq,
-				 IMEDIATO => imediato,
-				 MUX_BEQ_JMP_SELECTOR => mux_beq_jmp_selector,
-				 MUX_JR_SELECTOR => mux_jr_selector,
-				 JR_ADDR => reg1_out,
-				 PC_CURR => pc,
-				 PC_PLUS_4_JAL => pc_plus_4_jal,
-				 DATA_OUT => rom_out
-				);
 
-DECODER : entity work.decoderMaster  generic map (OPCODE_SIZE => OPCODE_SIZE, FUNC_SIZE => FUNC_SIZE, ULA_SELECTOR_SIZE => ULA_SELECTOR_SIZE, CONTROL_SIZE => CONTROL_SIZE)
-	port map (OPCODE => opcode, FUNC => func, CONTROL_DATA => control, ULA_OP => ula_op);
-	
 
 MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
 				port map(IN_A => pc, IN_B => ula_out, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
@@ -140,15 +101,6 @@ HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
 
 				
 ------------------------------------------------------			
-mux_beq_jmp_selector <= control(11);
-mux_jr_selector <= control(12);
-imediato <= rom_out(IMEDIATO_SIZE-1 downto 0);
-------------------------------------------------------
---BEQ_OR_JMP <= control(CONTROL_SIZE-1);
---SIG_EXTEN <= sig_ext;
---OPCODE_OUTPUT <= opcode;
---PC_DATA <= pc;
---ULA_DATA_OUTER <= ula_out;
---CONTROL_DATA_IN <= control;
+
 ------------------------------------------------------
 end architecture;

@@ -21,17 +21,17 @@ entity ID_PIPELINE is
 	 --	WB
 	 ENABLE_REG : in std_logic;
 	 ADDR_REG : in std_logic_vector(REG_ADDR_SIZE-1 downto 0); 
-	 DATA_REG : in std_logic_vector(DATA_SIZE-1 downto 0);
+	 DATA_WR : in std_logic_vector(DATA_SIZE-1 downto 0);
 	 
 	 -- OUT CONTROL 
 	 --	WB
 	 WB_ENABLE_REG : out std_logic;
-	 WB_MUX_ULA_MEM : out std_logic_vector(1 downto 0);
+	 WB_SELECTOR_ULA_MEM : out std_logic_vector(1 downto 0);
 	 
 	 --	MEM
 	 MEM_BEQ_OR_BNE : out std_logic;
-	 MEM_WR : out std_logic;
-	 MEM_RD : out std_logic;
+	 MEM_WR_RAM : out std_logic;
+	 MEM_RD_RAM : out std_logic;
 	 MEM_BEQ : out std_logic;
 	 
 	 --	EX
@@ -76,7 +76,7 @@ REGS : entity work.bancoReg generic map (DATA_SIZE => DATA_SIZE, REG_ADDR_SIZE =
           port map 
 			(  CLK => CLK,
 				ADDR_A => rs, ADDR_B => rt, ADDR_C => ADDR_REG,
-				DATA_WR => DATA_REG,
+				DATA_WR => DATA_WR,
 				OUT_A => DATA_R1, OUT_B => DATA_R2,
 				ENABLE_WR => ENABLE_REG
 			);
@@ -88,11 +88,11 @@ ESTENDE : entity work.estendeSinalGenerico  generic map (DATA_IN_SIZE => IMEDIAT
 -------------------------------- TO BE STORED IN REGS -------------------------
 -------------------------------------------------------------------------------	
 -------- CONTROL -----------------------
-MEM_WR <= control(0);
-MEM_RD <= control(1);
+MEM_WR_RAM <= control(0);
+MEM_RD_RAM <= control(1);
 MEM_BEQ_OR_BNE <= control(2);
 MEM_BEQ <= control(3);
-WB_MUX_ULA_MEM <= control(5 downto 4);
+WB_SELECTOR_ULA_MEM <= control(5 downto 4);
 EX_SELECTOR_RT_OR_IMEDIATO <= control(6);
 WB_ENABLE_REG  <= control(7);
 EX_SELECTOR_R3 <= control(10 downto 9);

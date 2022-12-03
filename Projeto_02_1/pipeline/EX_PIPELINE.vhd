@@ -47,9 +47,6 @@ architecture arquitetura of EX_PIPELINE is
 
 signal rt_or_imediato : std_logic_vector(DATA_SIZE-1 downto 0);
 
-
-
-
 begin
 
 SOMADOR :  entity work.somadorGenerico  generic map (DATA_SIZE => DATA_SIZE)
@@ -63,31 +60,5 @@ ULA : entity work.ULASomaSub  generic map(DATA_SIZE => DATA_SIZE, SELECTOR_SIZE 
 
 MUX_RT_RD_JAL : entity work.muxGenerico4x1  generic map (DATA_SIZE => REG_ADDR_SIZE)
 	port map ( IN_A => ADDR_RT, IN_B => ADDR_RD, IN_C => 5x"1F", IN_D => 5x"00", SELECTOR => SELECTOR_R3, DATA_OUT => WB_ADDR_REG );
-
-
-	
--------------------------------------------------------------------------------
--------------------------------- TO BE STORED IN REGS -------------------------
--------------------------------------------------------------------------------	
--------- CONTROL -----------------------
-
-----------------------------------------
------------ REGS -----------------------
--- ADDR
-
--- DATA
-
-----------------------------------------
-
--------------------------------------------------------------------------------
------------------------------------- TO HELP ----------------------------------
--------------------------------------------------------------------------------	
----------- INSTRCUTION ---------------
-
---------------------------------------
-
-------------- OTHER ------------------
-
---------------------------------------
 
 end architecture;

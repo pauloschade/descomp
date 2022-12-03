@@ -26,7 +26,6 @@ entity WB_PIPELINE is
 	
 	 ---------- OUTPUTS -------------
 	 DATA_WR				: out std_logic_vector(DATA_SIZE-1 downto 0)
-	 
   );
 end entity;
 

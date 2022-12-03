@@ -23,10 +23,10 @@ entity IF_PIPELINE is
 	 --	TEST
 	 PC_CURR : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 --	EXEC
-	 EXEC_PC_PLUS_4_OUT : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 EX_PC_PLUS_4 : out std_logic_vector(DATA_SIZE-1 downto 0);
 	 
 	 --	ID
-	 ID_INSTRUCTION : out std_logic_vector(DATA_SIZE-1 downto 0)
+	 INSTRUCTION : out std_logic_vector(DATA_SIZE-1 downto 0)
   );
 end entity;
 
@@ -71,7 +71,7 @@ MUX_JR : entity work.generic_MUX_2x1  generic map (DATA_SIZE => DATA_SIZE)
 --          port map (ADDR => pc_out, DATA_OUT => DATA_OUT);
 
 ROM : entity work.ROMMIPS_MIF   generic map  (dataWidth => DATA_SIZE, addrWidth => DATA_SIZE)
-          port map (ADDR => pc_out, DATA_OUT => ID_INSTRUCTION);
+          port map (ADDR => pc_out, DATA_OUT => INSTRUCTION);
 
 	
 
@@ -86,7 +86,7 @@ jmp_addr(1 downto 0) <= "00";
 
 ------------PC DATA OUT-----------
 PC_CURR <= pc_out;
-EXEC_PC_PLUS_4_OUT <= pc_plus_4;
+EX_PC_PLUS_4 <= pc_plus_4;
 ----------------------------------
 
 end architecture;

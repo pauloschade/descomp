@@ -4,7 +4,7 @@ use ieee.std_logic_1164.all;
 entity MEM_PIPELINE is
   -- Total de bits das entradas e saidas
   generic (
-  	 DATA_SIZE : natural := 32;
+   DATA_SIZE : natural := 32;
 	 REG_ADDR_SIZE : natural := 5;
 	 CONTROL_SIZE : natural := 11;
 	 OPCODE_SIZE : natural := 6;

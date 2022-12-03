@@ -19,7 +19,7 @@ entity ID_PIPELINE is
 	 --	IF
 	 INSTRUCTION : in std_logic_vector(DATA_SIZE-1 downto 0);
 	 --	WB
-	 ENABLE_REG : in std_logic;
+	 ENABLE_REG_WR : in std_logic;
 	 ADDR_REG : in std_logic_vector(REG_ADDR_SIZE-1 downto 0); 
 	 DATA_WR : in std_logic_vector(DATA_SIZE-1 downto 0);
 	 
@@ -81,7 +81,7 @@ REGS : entity work.bancoReg generic map (DATA_SIZE => DATA_SIZE, REG_ADDR_SIZE =
 				ADDR_A => rs, ADDR_B => rt, ADDR_C => ADDR_REG,
 				DATA_WR => DATA_WR,
 				OUT_A => DATA_R1, OUT_B => DATA_R2,
-				ENABLE_WR => ENABLE_REG
+				ENABLE_WR => ENABLE_REG_WR
 			);
 	
 ESTENDE : entity work.estendeSinalGenerico  generic map (DATA_IN_SIZE => IMEDIATO_SIZE, DATA_OUT_SIZE => DATA_SIZE)

@@ -69,33 +69,33 @@ architecture arquitetura of Projeto2 is
 	 --	TEST
 	 signal pc_curr : std_logic_vector(DATA_SIZE-1 downto 0);
 	 --	EXEC
-	 signal exec_pc_plus_4 : std_logic_vector(DATA_SIZE-1 downto 0);
+	 signal pc_plus_4 : std_logic_vector(DATA_SIZE-1 downto 0);
 	 --	ID
-	 signal id_instruction : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 signal instruction : out std_logic_vector(DATA_SIZE-1 downto 0);
 	---
 	--------------------------------------
 	---------------- ID ------------------
 	--- INPUT
 	--	WB
---	 signal enable_reg : std_logic;
---	 signal addr_reg : std_logic_vector(REG_ADDR_SIZE-1 downto 0); 
---	 signal data_wr : std_logic_vector(DATA_SIZE-1 downto 0);
+	--	 signal enable_reg : std_logic;
+	--	 signal addr_reg : std_logic_vector(REG_ADDR_SIZE-1 downto 0); 
+	--	 signal data_wr : std_logic_vector(DATA_SIZE-1 downto 0);
 	 
 	-- OUTPUT 
 	--	WB
-	 signal wb_enable_reg : std_logic;
-	 signal wb_selector_ula_mem : out std_logic_vector(1 downto 0);
+	 signal enable_reg : std_logic;
+	 signal selector_ula_mem : out std_logic_vector(1 downto 0);
 	 
 	 --	MEM
-	 signal mem_beq_or_bne : std_logic;
-	 signal mem_wr_ram : std_logic;
-	 signal mem_rd_ram : std_logic;
-	 signal mem_beq : std_logic;
+	 signal beq_or_bne : std_logic;
+	 signal wr_ram : std_logic;
+	 signal rd_ram : std_logic;
+	 signal beq : std_logic;
 	 
 	 --	EX
-	 signal ex_selector_r3 : std_logic_vector(1 downto 0);
-	 signal ex_ula_op : std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
-	 signal ex_selector_rt_or_imediato : out std_logic;
+	 signal selector_r3 : std_logic_vector(1 downto 0);
+	 signal ula_op : std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
+	 signal selector_rt_or_imediato : out std_logic;
 	 
 	 
 	 --OUT REGS
@@ -110,9 +110,32 @@ architecture arquitetura of Projeto2 is
 	 signal addr_rt : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
 	 signal addr_rd : std_logic_vector(REG_ADDR_SIZE-1 downto 0)
 	---
-	
-	 
 
+	--------------------------------------
+	---------------- EX ------------------
+	--- INPUT
+	---
+	--- OUTPUT
+	 signal ula_result : std_logic_vector(DATA_SIZE-1 downto 0);
+	 signal sig_ext_plus_pc : std_logic_vector(DATA_SIZE-1 downto 0);;
+	 signal zero_ula : std_logic;
+	 signal wb_addr_reg : std_logic_vector(1 downto 0);
+
+	--------------------------------------
+	---------------- MEM -----------------
+	--- INPUT
+	---
+	--- OUTPUT
+	signal selector_branch : std_logic;
+	signal rd_data : std_logic_vector(DATA_SIZE-1 downto 0);
+	--------------------------------------
+	---------------- WB ------------------
+	--- INPUT
+	---
+	--- OUTPUT
+	signal data_wr_regs : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal wb_enable_reg : std_logic;
+	--------------------------------------
 	
 begin
 
@@ -142,8 +165,8 @@ IF_PIPE : entity work.IF_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 					SELECTOR_BRANCH => selector_branch,
 					---------- OUTPUTS -----------------
 					PC_CURR => pc_curr,
-					EXEC_PC_PLUS_4_OUT => exec_pc_plus_4,
-					ID_INSTRUCTION => id_instruction
+					EX_PC_PLUS_4 => pc_plus_4,
+					ID_INSTRUCTION => instruction
 				);
 				
 
@@ -152,14 +175,89 @@ ID_PIPE : entity work.ID_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 				(
 					CLK => CLK,
 					---------- INPUTS ---------------
-					INSTRUCTION => id_instruction,
-					
+					-- TODOOOO
+					INSTRUCTION => instruction,
+					--WB
+					ENABLE_REG_WR => wb_enable_reg,
+					ADDR_REG => wb_addr_reg,
+					DATA_WR => data_wr_regs,
 					---------- OUTPUTS -----------------
-					WB_ENABLE_REG => wb_enable_reg,
-					WB_SELECTOR_ULA_MEM => wb_selector_ula_mem,
-					MEM_BEQ_OR_BNE => mem_beq_or_bne,
-					
+					WB_ENABLE_REG => enable_reg,
+					WB_SELECTOR_ULA_MEM => selector_ula_mem,
+
+					MEM_BEQ_OR_BNE => beq_or_bne,
+					MEM_WR_RAM => wr_ram,
+					MEM_RD_RAM => rd_ram,
+					MEM_BEQ => beq,
+
+					EX_SELECTOR_R3 => selector_r3,
+					EX_ULA_OP => ula_op,
+					EX_SELECTOR_RT_OR_IMEDIATO => selector_rt_or_imediato,
+
+					SIG_EXT => sig_ext,
+					DATA_R1 => data_r1,
+					DATA_R2 => data_r2,
+					JMP_SELECTOR => jmp_selector,
+					JR_SELECTOR => jr_selector,
+					ADDR_RT => addr_rt,
+					ADDR_RD => addr_rd
 				);
+
+EX_PIPE : entity work.EX_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
+				port map
+				(
+					CLK => CLK,
+					---------- INPUTS ---------------
+					DATA_R1 => data_r1,
+					DATA_R2 => data_r2,
+					SIG_EXT => sig_ext,
+					ULA_OP => ula_op,
+					SELECTOR_R3 => selector_r3,
+					SELECTOR_RT_OR_IMEDIATO => selector_rt_or_imediato,
+					PC_PLUS_4 => pc_plus_4,
+					---------- OUTPUTS -----------------
+					ULA_RESULT => ula_result,
+					SIG_EXT_PLUS_PC => sig_ext_plus_pc,
+					ZERO_ULA => zero_ula,
+					WB_ADDR_REG => addr_reg
+				);
+
+MEM_PIPE : entity work.MEM_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
+				port map
+				(
+					CLK => CLK,
+					---------- INPUTS ---------------
+					ULA_RESULT => ula_result,
+					BEQ_OR_BNE => beq_or_bne,
+					WR_RAM => wr_ram,
+					RD_RAM => rd_ram,
+					BEQ => beq,
+					DATA_WR => data_r2,
+					---------- OUTPUTS -----------------
+					DATA_RD => data_rd,
+					SELECTOR_BRANCH => selector_branch
+				);
+
+WB_PIPE : entity work.WB_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
+				port map
+				(
+					CLK => CLK,
+					---------- INPUTS ---------------
+					SELECTOR_ULA_MEM => selector_ula_mem,
+					ULA_RESULT => ula_result,
+					DATA_RD => data_rd,
+					ADDR_REG => addr_reg,
+					LUI_ADDR => addr_rt, -- TODO ADD LUI
+					---------- OUTPUTS -----------------
+					DATA_OUT => data_wr_regs
+				);
+
+
+wb_enable_reg <= enable_reg;
+wb_addr_reg <= addr_reg;
+
+end architecture;
+
 
 --MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
 --				port map(IN_A => pc, IN_B => ula_out, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
@@ -180,4 +278,3 @@ ID_PIPE : entity work.ID_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 --ULA_DATA_OUTER <= ula_out;
 --CONTROL_DATA_IN <= control;
 ------------------------------------------------------
-end architecture;

@@ -7,7 +7,7 @@ entity decoderMaster is
    generic (
 			FUNC_SIZE : natural := 6;
 			OPCODE_SIZE : natural := 6;
-			CONTROL_SIZE : natural := 8;
+			CONTROL_SIZE : natural := 13;
 			ULA_SELECTOR_SIZE : natural := 4
   );
   port ( 

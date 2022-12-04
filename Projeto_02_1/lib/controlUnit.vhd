@@ -6,7 +6,7 @@ use ieee.std_logic_1164.all;
 entity controlUnit is
    generic (
          OPCODE_SIZE: natural := 6;
-         CONTROL_SIZE: natural := 12
+         CONTROL_SIZE: natural := 13
   );
   port ( 
 			OPCODE : in std_logic_vector(OPCODE_SIZE-1 downto 0);

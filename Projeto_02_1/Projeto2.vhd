@@ -15,6 +15,7 @@ entity Projeto2 is
 	 HEX_SIZE : natural := 7;
 	 LED_N : natural := 10;
 	 SW_N : natural := 10;
+	 REG_ADDR_SIZE : natural := 5;
 	 
 	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
@@ -59,10 +60,6 @@ architecture arquitetura of Projeto2 is
 	 signal imediato_jmp :  std_logic_vector(IMEDIATO_SIZE-1 downto 0);
 	 signal beq_jmp_selector : std_logic;
 	 signal jr_addr : std_logic_vector(DATA_SIZE-1 downto 0);
-
-	 signal jr_selector : std_logic;
-	 signal sig_ext_plus_pc : std_logic_vector(DATA_SIZE-1 downto 0);
-	 signal selector_branch : std_logic;
 	---
 	 
 	--- OUTPUT
@@ -71,7 +68,7 @@ architecture arquitetura of Projeto2 is
 	 --	EXEC
 	 signal pc_plus_4 : std_logic_vector(DATA_SIZE-1 downto 0);
 	 --	ID
-	 signal instruction : out std_logic_vector(DATA_SIZE-1 downto 0);
+	 signal instruction : std_logic_vector(DATA_SIZE-1 downto 0);
 	---
 	--------------------------------------
 	---------------- ID ------------------
@@ -84,7 +81,7 @@ architecture arquitetura of Projeto2 is
 	-- OUTPUT 
 	--	WB
 	 signal enable_reg : std_logic;
-	 signal selector_ula_mem : out std_logic_vector(1 downto 0);
+	 signal selector_ula_mem : std_logic_vector(1 downto 0);
 	 
 	 --	MEM
 	 signal beq_or_bne : std_logic;
@@ -95,7 +92,7 @@ architecture arquitetura of Projeto2 is
 	 --	EX
 	 signal selector_r3 : std_logic_vector(1 downto 0);
 	 signal ula_op : std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
-	 signal selector_rt_or_imediato : out std_logic;
+	 signal selector_rt_or_imediato : std_logic;
 	 
 	 
 	 --OUT REGS
@@ -108,7 +105,7 @@ architecture arquitetura of Projeto2 is
 	 signal jr_selector  : std_logic;
 	 
 	 signal addr_rt : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
-	 signal addr_rd : std_logic_vector(REG_ADDR_SIZE-1 downto 0)
+	 signal addr_rd : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
 	---
 
 	--------------------------------------
@@ -117,9 +114,10 @@ architecture arquitetura of Projeto2 is
 	---
 	--- OUTPUT
 	 signal ula_result : std_logic_vector(DATA_SIZE-1 downto 0);
-	 signal sig_ext_plus_pc : std_logic_vector(DATA_SIZE-1 downto 0);;
+	 signal sig_ext_plus_pc : std_logic_vector(DATA_SIZE-1 downto 0);
 	 signal zero_ula : std_logic;
-	 signal wb_addr_reg : std_logic_vector(1 downto 0);
+	 signal wb_addr_reg : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
+	 signal addr_reg    : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
 
 	--------------------------------------
 	---------------- MEM -----------------
@@ -136,6 +134,10 @@ architecture arquitetura of Projeto2 is
 	signal data_wr_regs : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal wb_enable_reg : std_logic;
 	--------------------------------------
+	
+	
+	----------------- TESTE ---------------------
+	signal signal_teste : std_logic_vector(DATA_SIZE-1 downto 0);
 	
 begin
 
@@ -166,11 +168,11 @@ IF_PIPE : entity work.IF_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 					---------- OUTPUTS -----------------
 					PC_CURR => pc_curr,
 					EX_PC_PLUS_4 => pc_plus_4,
-					ID_INSTRUCTION => instruction
+					INSTRUCTION => instruction
 				);
 				
 
-ID_PIPE : entity work.ID_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
+ID_PIPE : entity work.ID_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => 16)
 				port map
 				(
 					CLK => CLK,
@@ -215,6 +217,8 @@ EX_PIPE : entity work.EX_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 					SELECTOR_R3 => selector_r3,
 					SELECTOR_RT_OR_IMEDIATO => selector_rt_or_imediato,
 					PC_PLUS_4 => pc_plus_4,
+					ADDR_RT => addr_rt,
+					ADDR_RD => addr_rd,
 					---------- OUTPUTS -----------------
 					ULA_RESULT => ula_result,
 					SIG_EXT_PLUS_PC => sig_ext_plus_pc,
@@ -232,9 +236,10 @@ MEM_PIPE : entity work.MEM_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO
 					WR_RAM => wr_ram,
 					RD_RAM => rd_ram,
 					BEQ => beq,
+					ZERO_ULA => zero_ula,
 					DATA_WR => data_r2,
 					---------- OUTPUTS -----------------
-					DATA_RD => data_rd,
+					DATA_RD => rd_data,
 					SELECTOR_BRANCH => selector_branch
 				);
 
@@ -245,26 +250,25 @@ WB_PIPE : entity work.WB_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 					---------- INPUTS ---------------
 					SELECTOR_ULA_MEM => selector_ula_mem,
 					ULA_RESULT => ula_result,
-					DATA_RD => data_rd,
-					ADDR_REG => addr_reg,
-					LUI_ADDR => addr_rt, -- TODO ADD LUI
+					DATA_RD => rd_data,
+					JAL_ADDR => pc_plus_4,
+					LUI_ADDR => 32x"00", -- TODO ADD LUI
 					---------- OUTPUTS -----------------
-					DATA_OUT => data_wr_regs
+					DATA_WR => data_wr_regs
 				);
 
 
 wb_enable_reg <= enable_reg;
 wb_addr_reg <= addr_reg;
 
+
+MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
+				port map(IN_A => pc_curr, IN_B => ula_result, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
+				
+HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
+				port map(DATA_IN => signal_teste, HEX0 => HEX0, HEX1 => HEX1, HEX2 => HEX2, HEX3 => HEX3, HEX4 => HEX4, HEX5 => HEX5, LED_0_3 => LEDR(3 downto 0), LED_4_7 => LEDR(7 downto 4));
+
 end architecture;
-
-
---MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
---				port map(IN_A => pc, IN_B => ula_out, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
---				
---HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
---				port map(DATA_IN => signal_teste, HEX0 => HEX0, HEX1 => HEX1, HEX2 => HEX2, HEX3 => HEX3, HEX4 => HEX4, HEX5 => HEX5, LED_0_3 => LEDR(3 downto 0), LED_4_7 => LEDR(7 downto 4));
-
 				
 ------------------------------------------------------			
 --mux_beq_jmp_selector <= control(11);

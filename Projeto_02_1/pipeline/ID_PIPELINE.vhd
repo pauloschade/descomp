@@ -6,7 +6,7 @@ entity ID_PIPELINE is
   generic (
   	 DATA_SIZE : natural := 32;
 	 REG_ADDR_SIZE : natural := 5;
-	 CONTROL_SIZE : natural := 11;
+	 CONTROL_SIZE : natural := 13;
 	 OPCODE_SIZE : natural := 6;
 	 ULA_SELECTOR_SIZE : natural := 4;
 	 IMEDIATO_SIZE : natural := 16;

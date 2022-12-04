@@ -17,6 +17,10 @@ entity Projeto2 is
 	 SW_N : natural := 10;
 	 REG_ADDR_SIZE : natural := 5;
 	 
+	 WB_CONTROL_SIZE   : natural := 3;
+	 MEM_CONTROL_SIZE  : natural := 4;
+	 EX_CONTROL_SIZE   : natural := 3; -- + ULA OP
+	 
 	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
@@ -54,89 +58,46 @@ end entity;
 architecture arquitetura of Projeto2 is
 
 	signal CLK : std_logic;
-	--------------------------------------- SIGS --------------------------------------------
-	---------------- IF -----------------
-	--- INPUT
-	 signal imediato_jmp :  std_logic_vector(IMEDIATO_SIZE-1 downto 0);
-	 signal beq_jmp_selector : std_logic;
-	 signal jr_addr : std_logic_vector(DATA_SIZE-1 downto 0);
-	---
-	 
-	--- OUTPUT
-	 --	TEST
-	 signal pc_curr : std_logic_vector(DATA_SIZE-1 downto 0);
-	 --	EXEC
-	 signal pc_plus_4 : std_logic_vector(DATA_SIZE-1 downto 0);
-	 --	ID
-	 signal instruction : std_logic_vector(DATA_SIZE-1 downto 0);
-	---
-	--------------------------------------
-	---------------- ID ------------------
-	--- INPUT
-	--	WB
-	--	 signal enable_reg : std_logic;
-	--	 signal addr_reg : std_logic_vector(REG_ADDR_SIZE-1 downto 0); 
-	--	 signal data_wr : std_logic_vector(DATA_SIZE-1 downto 0);
-	 
-	-- OUTPUT 
-	--	WB
-	 signal enable_reg : std_logic;
-	 signal selector_ula_mem : std_logic_vector(1 downto 0);
-	 
-	 --	MEM
-	 signal beq_or_bne : std_logic;
-	 signal wr_ram : std_logic;
-	 signal rd_ram : std_logic;
-	 signal beq : std_logic;
-	 
-	 --	EX
-	 signal selector_r3 : std_logic_vector(1 downto 0);
-	 signal ula_op : std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
-	 signal selector_rt_or_imediato : std_logic;
-	 
-	 
-	 --OUT REGS
-	 signal sig_ext : std_logic_vector(DATA_SIZE-1 downto 0);
-	 signal data_r1 : std_logic_vector(DATA_SIZE-1 downto 0);
-	 signal data_r2 : std_logic_vector(DATA_SIZE-1 downto 0);
-	 
-	 --OUT JMP
-	 signal jmp_selector : std_logic;
-	 signal jr_selector  : std_logic;
-	 
-	 signal addr_rt : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
-	 signal addr_rd : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
-	---
-
-	--------------------------------------
-	---------------- EX ------------------
-	--- INPUT
-	---
-	--- OUTPUT
-	 signal ula_result : std_logic_vector(DATA_SIZE-1 downto 0);
-	 signal sig_ext_plus_pc : std_logic_vector(DATA_SIZE-1 downto 0);
-	 signal zero_ula : std_logic;
-	 signal wb_addr_reg : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
-	 signal addr_reg    : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
-
-	--------------------------------------
-	---------------- MEM -----------------
-	--- INPUT
-	---
-	--- OUTPUT
+	
+	-- IF -------------------------------------------------------------------------------------------------
+	signal pc_plus_4_if_out, pc_plus_4_if_id, pc_plus_4_id_ex, pc_plus_4_ex_mem, pc_plus_4_mem_wb : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal instruction_if_out, instruction_if_id : std_logic_vector(DATA_SIZE-1 downto 0);
+	-------------------------------------------------------------------------------------------------------
+	-- ID -------------------------------------------------------------------------------------------------
+	signal control : std_logic_vector(CONTROL_SIZE-1 downto 0);
+	signal ula_op_id_out, ula_op_id_ex : std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
+	signal data_r1_id_out, data_r1_id_ex : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal data_r2_id_out, data_r2_id_ex, data_r2_ex_mem : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal sig_ext_id_out, sig_ext_id_ex : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal sig_lui_id_out, sig_lui_id_ex, sig_lui_ex_mem, sig_lui_mem_wb  : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal rt_addr_id_out, rt_addr_id_ex : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
+	signal rd_addr_id_out, rd_addr_id_ex : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
+	
+	signal selector_jmp, selector_jr : std_logic;
+	signal imediato_jmp : std_logic_vector(25 downto 0);
+	
+	-- HELP
+	signal wb_control_id_out, wb_control_id_ex, wb_control_ex_mem, wb_control_mem_wb : std_logic_vector(WB_CONTROL_SIZE-1 downto 0);
+	signal mem_control_id_out, mem_control_id_ex, mem_control_ex_mem : std_logic_vector(MEM_CONTROL_SIZE-1 downto 0);
+	signal ex_control_id_out, ex_control_id_ex : std_logic_vector(EX_CONTROL_SIZE-1 downto 0);
+	--------------------------------------------------------------------------------------------------------
+	-- EX --------------------------------------------------------------------------------------------------
+	signal pc_plus_sig_ex_out, pc_plus_sig_ex_mem : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal ula_zero_ex_out, ula_zero_ex_mem : std_logic;
+	signal ula_result_ex_out, ula_result_ex_mem, ula_result_mem_wb : std_logic_vector(DATA_SIZE-1 downto 0);
+	signal reg_wr_addr_ex_out, reg_wr_addr_ex_mem, reg_wr_addr_mem_wb : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
+	--------------------------------------------------------------------------------------------------------
+	-- MEM -------------------------------------------------------------------------------------------------
+	signal ram_rd_data_mem_out, ram_rd_data_mem_wr : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal selector_branch : std_logic;
-	signal rd_data : std_logic_vector(DATA_SIZE-1 downto 0);
-	--------------------------------------
-	---------------- WB ------------------
-	--- INPUT
-	---
-	--- OUTPUT
-	signal data_wr_regs : std_logic_vector(DATA_SIZE-1 downto 0);
-	signal wb_enable_reg : std_logic;
-	--------------------------------------
+	--------------------------------------------------------------------------------------------------------
+	-- WB --------------------------------------------------------------------------------------------------
+	signal reg_wr_wb_out: std_logic_vector(DATA_SIZE-1 downto 0);
+	--------------------------------------------------------------------------------------------------------
 	
 	
 	----------------- TESTE ---------------------
+	signal pc_curr : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal signal_teste : std_logic_vector(DATA_SIZE-1 downto 0);
 	
 begin
@@ -160,110 +121,166 @@ IF_PIPE : entity work.IF_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 					CLK => CLK,
 					---------- INPUTS ---------------
 					IMEDIATO => imediato_jmp,
-					BEQ_JMP_SELECTOR => beq_jmp_selector,
-					JR_ADDR => jr_addr,
-					JR_SELECTOR => jr_selector,
-					SIG_EXT_PLUS_PC => sig_ext_plus_pc,
+					BEQ_JMP_SELECTOR => selector_jmp,
+					JR_ADDR => data_r1_id_out,
+					JR_SELECTOR => selector_jr,
+					SIG_EXT_PLUS_PC => pc_plus_sig_ex_mem,
 					SELECTOR_BRANCH => selector_branch,
 					---------- OUTPUTS -----------------
 					PC_CURR => pc_curr,
-					EX_PC_PLUS_4 => pc_plus_4,
-					INSTRUCTION => instruction
+					EX_PC_PLUS_4 => pc_plus_4_if_out,
+					INSTRUCTION => instruction_if_out
 				);
 				
+-----------------------------------------------------------------
+------------ REG PIPE HERE ---------
+pc_plus_4_if_id <= pc_plus_4_if_out;
+instruction_if_id <= instruction_if_out;
+------------------------------------
+-----------------------------------------------------------------
+---
+imediato_jmp <= instruction_if_id(25 downto 0);
+---
+
 
 ID_PIPE : entity work.ID_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => 16)
 				port map
 				(
 					CLK => CLK,
 					---------- INPUTS ---------------
-					-- TODOOOO
-					INSTRUCTION => instruction,
-					--WB
-					ENABLE_REG_WR => wb_enable_reg,
-					ADDR_REG => wb_addr_reg,
-					DATA_WR => data_wr_regs,
+					INSTRUCTION => instruction_if_id,
+					ENABLE_REG_WR => wb_control_mem_wb(2),
+					ADDR_REG => reg_wr_addr_mem_wb,
+					DATA_WR => reg_wr_wb_out,
 					---------- OUTPUTS -----------------
-					WB_ENABLE_REG => enable_reg,
-					WB_SELECTOR_ULA_MEM => selector_ula_mem,
-
-					MEM_BEQ_OR_BNE => beq_or_bne,
-					MEM_WR_RAM => wr_ram,
-					MEM_RD_RAM => rd_ram,
-					MEM_BEQ => beq,
-
-					EX_SELECTOR_R3 => selector_r3,
-					EX_ULA_OP => ula_op,
-					EX_SELECTOR_RT_OR_IMEDIATO => selector_rt_or_imediato,
-
-					SIG_EXT => sig_ext,
-					DATA_R1 => data_r1,
-					DATA_R2 => data_r2,
-					JMP_SELECTOR => jmp_selector,
-					JR_SELECTOR => jr_selector,
-					ADDR_RT => addr_rt,
-					ADDR_RD => addr_rd
+					CONTROL => control,
+					ULA_OP => ula_op_id_out,
+					SIG_EXT => sig_ext_id_out,
+					SIG_LUI => sig_lui_id_out,
+					DATA_R1 => data_r1_id_out,
+					DATA_R2 => data_r2_id_out,
+					ADDR_RT => rt_addr_id_out,
+					ADDR_RD => rd_addr_id_out
 				);
 
-EX_PIPE : entity work.EX_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
+------------------------------------------------------------------
+---
+ex_control_id_out(1 downto 0) <= CONTROL(10 downto 9);
+ex_control_id_out(2) <= CONTROL(6);
+---
+mem_control_id_out <= CONTROL(3 downto 0);
+---
+wb_control_id_out(1 downto 0) <= CONTROL(5 downto 4);
+wb_control_id_out(2) <= CONTROL(7);
+---
+selector_jmp <= CONTROL(11);
+selector_jr <= CONTROL(12);
+
+
+------------ REG PIPE HERE ---------
+
+sig_ext_id_ex <= sig_ext_id_out;
+sig_lui_id_ex <= sig_lui_id_out;
+
+data_r1_id_ex <= data_r1_id_out;
+data_r2_id_ex <= data_r2_id_out;
+rt_addr_id_ex <= rt_addr_id_out;
+rd_addr_id_ex <= rd_addr_id_out;
+
+ula_op_id_ex <= ula_op_id_out;
+
+ex_control_id_ex <= ex_control_id_out;
+mem_control_id_ex <= mem_control_id_out;
+wb_control_id_ex <= wb_control_id_out;
+
+pc_plus_4_id_ex <= pc_plus_4_if_id;
+
+------------------------------------
+------------------------------------------------------------------
+
+
+EX_PIPE : entity work.EX_PIPELINE generic map(DATA_SIZE => DATA_SIZE, CONTROL_SIZE => EX_CONTROL_SIZE ,IMEDIATO_SIZE => IMEDIATO_SIZE)
 				port map
 				(
 					CLK => CLK,
 					---------- INPUTS ---------------
-					DATA_R1 => data_r1,
-					DATA_R2 => data_r2,
-					SIG_EXT => sig_ext,
-					ULA_OP => ula_op,
-					SELECTOR_R3 => selector_r3,
-					SELECTOR_RT_OR_IMEDIATO => selector_rt_or_imediato,
-					PC_PLUS_4 => pc_plus_4,
-					ADDR_RT => addr_rt,
-					ADDR_RD => addr_rd,
+					DATA_R1 => data_r1_id_ex,
+					DATA_R2 => data_r2_id_ex,
+					CONTROL => ex_control_id_ex,
+					ULA_OP => ula_op_id_ex,
+					PC_PLUS_4 => pc_plus_4_id_ex,
+					SIG_EXT => sig_ext_id_ex,
+					ADDR_RT => rt_addr_id_ex,
+					ADDR_RD => rd_addr_id_ex,
 					---------- OUTPUTS -----------------
-					ULA_RESULT => ula_result,
-					SIG_EXT_PLUS_PC => sig_ext_plus_pc,
-					ZERO_ULA => zero_ula,
-					WB_ADDR_REG => addr_reg
+					ULA_RESULT => ula_result_ex_out,
+					SIG_EXT_PLUS_PC => pc_plus_sig_ex_out,
+					ZERO_ULA => ula_zero_ex_out,
+					WB_ADDR_REG => reg_wr_addr_ex_out
 				);
+				
+------------------------------------------------------------------
+------------ REG PIPE HERE ---------
+ula_result_ex_mem <= ula_result_ex_out;
+ula_zero_ex_mem <= ula_zero_ex_out;
+pc_plus_sig_ex_mem <= pc_plus_sig_ex_out;
+reg_wr_addr_ex_mem <= reg_wr_addr_ex_out;
 
-MEM_PIPE : entity work.MEM_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
+data_r2_ex_mem <= data_r2_id_ex;
+
+mem_control_ex_mem <= mem_control_id_ex;
+wb_control_ex_mem <= wb_control_id_ex;
+
+pc_plus_4_ex_mem <= pc_plus_4_id_ex;
+sig_lui_ex_mem <= sig_lui_id_ex;
+------------------------------------
+------------------------------------------------------------------
+
+MEM_PIPE : entity work.MEM_PIPELINE generic map(DATA_SIZE => DATA_SIZE, CONTROL_SIZE => MEM_CONTROL_SIZE ,IMEDIATO_SIZE => IMEDIATO_SIZE)
 				port map
 				(
 					CLK => CLK,
 					---------- INPUTS ---------------
-					ULA_RESULT => ula_result,
-					BEQ_OR_BNE => beq_or_bne,
-					WR_RAM => wr_ram,
-					RD_RAM => rd_ram,
-					BEQ => beq,
-					ZERO_ULA => zero_ula,
-					DATA_WR => data_r2,
+					CONTROL => mem_control_ex_mem,
+					ULA_RESULT => ula_result_ex_mem,
+					ZERO_ULA => ula_zero_ex_mem,
+					DATA_WR => data_r2_ex_mem,
 					---------- OUTPUTS -----------------
-					DATA_RD => rd_data,
+					DATA_RD => ram_rd_data_mem_out,
 					SELECTOR_BRANCH => selector_branch
 				);
+				
+------------------------------------------------------------------
+------------ REG PIPE HERE ---------
+wb_control_mem_wb <= wb_control_ex_mem;
+
+ula_result_mem_wb <= ula_result_ex_mem;
+ram_rd_data_mem_wr <= ram_rd_data_mem_out;
+pc_plus_4_mem_wb <= pc_plus_4_ex_mem;
+sig_lui_mem_wb <= sig_lui_ex_mem;
+-- LUI
+
+reg_wr_addr_mem_wb <= reg_wr_addr_ex_mem;
+------------------------------------
+------------------------------------------------------------------
 
 WB_PIPE : entity work.WB_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_SIZE => IMEDIATO_SIZE)
 				port map
 				(
 					CLK => CLK,
 					---------- INPUTS ---------------
-					SELECTOR_ULA_MEM => selector_ula_mem,
-					ULA_RESULT => ula_result,
-					DATA_RD => rd_data,
-					JAL_ADDR => pc_plus_4,
-					LUI_ADDR => 32x"00", -- TODO ADD LUI
+					SELECTOR_ULA_MEM => wb_control_mem_wb(1 downto 0),
+					ULA_RESULT => ula_result_mem_wb,
+					DATA_RD => ram_rd_data_mem_wr,
+					JAL_ADDR => pc_plus_4_mem_wb,
+					LUI_ADDR => sig_lui_mem_wb, 
 					---------- OUTPUTS -----------------
-					DATA_WR => data_wr_regs
+					DATA_WR => reg_wr_wb_out
 				);
 
 
-wb_enable_reg <= enable_reg;
-wb_addr_reg <= addr_reg;
-
-
 MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
-				port map(IN_A => pc_curr, IN_B => ula_result, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
+				port map(IN_A => pc_curr, IN_B => ula_result_mem_wb, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
 				
 HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
 				port map(DATA_IN => signal_teste, HEX0 => HEX0, HEX1 => HEX1, HEX2 => HEX2, HEX3 => HEX3, HEX4 => HEX4, HEX5 => HEX5, LED_0_3 => LEDR(3 downto 0), LED_4_7 => LEDR(7 downto 4));

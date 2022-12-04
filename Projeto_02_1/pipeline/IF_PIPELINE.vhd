@@ -49,11 +49,6 @@ begin
 
 MUX_BEQ : entity work.generic_MUX_2x1  generic map (DATA_SIZE => DATA_SIZE)
 	port map (IN_A => pc_plus_4, IN_B => SIG_EXT_PLUS_PC, MUX_SELECTOR => SELECTOR_BRANCH, DATA_OUT => pc_beq_addr );
-
---- MOVE TO EXEC ----------------------------------
---SOMADOR :  entity work.somadorGenerico  generic map (DATA_SIZE => DATA_SIZE)
---	port map( IN_A => pc_plus_4, IN_B => sig_ext_shifted, DATA_OUT => pc_plus_sig_ext);
----------------------------------------------------	
 	
 incrementaPC :  entity work.somaConstante  generic map (DATA_SIZE => DATA_SIZE, constante => 4)
         port map( entrada => pc_out, saida => pc_plus_4);

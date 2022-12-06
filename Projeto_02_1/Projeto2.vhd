@@ -538,7 +538,7 @@ WB_PIPE : entity work.WB_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 
 
 MUX_TEST : entity work.muxGenerico4x1 generic map(DATA_SIZE => DATA_SIZE)
-				port map(IN_A => pc_curr, IN_B =>data_r1_id_out, IN_C => ula_result_ex_out, IN_D => reg_wr_wb_out , SELECTOR => SW(SW_N-1 downto SW_N-2) ,DATA_OUT => signal_teste);
+				port map(IN_A => pc_curr, IN_B =>data_r1_id_ex, IN_C => ula_result_ex_out, IN_D => reg_wr_wb_out , SELECTOR => SW(SW_N-1 downto SW_N-2) ,DATA_OUT => signal_teste);
 				
 HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
 				port map(DATA_IN => signal_teste, HEX0 => HEX0, HEX1 => HEX1, HEX2 => HEX2, HEX3 => HEX3, HEX4 => HEX4, HEX5 => HEX5, LED_0_3 => LEDR(3 downto 0), LED_4_7 => LEDR(7 downto 4));

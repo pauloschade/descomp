@@ -53,12 +53,18 @@ begin
     process(CLK) is
     begin
         if (rising_edge(CLK)) then
+		  --if (falling_edge(CLK)) then
             if (ENABLE_WR = '1') then
                 registrador(to_integer(unsigned(ADDR_C))) := DATA_WR;
             end if;
         end if;
     end process;
     -- Se endereco = 0 : retorna ZERO
-    OUT_B <= zero when to_integer(unsigned(ADDR_B)) = to_integer(unsigned(zero)) else registrador(to_integer(unsigned(ADDR_B)));
-    OUT_A <= zero when to_integer(unsigned(ADDR_A)) = to_integer(unsigned(zero)) else registrador(to_integer(unsigned(ADDR_A)));
+    OUT_B <= zero when to_integer(unsigned(ADDR_B)) = to_integer(unsigned(zero)) else
+				 DATA_WR when (ADDR_C = ADDR_B) else
+				 registrador(to_integer(unsigned(ADDR_B)));
+				 
+    OUT_A <= zero when to_integer(unsigned(ADDR_A)) = to_integer(unsigned(zero)) else
+				 DATA_WR when (ADDR_C = ADDR_A) else
+				 registrador(to_integer(unsigned(ADDR_A)));
 end architecture;

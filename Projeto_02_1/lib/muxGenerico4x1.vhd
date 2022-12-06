@@ -17,5 +17,5 @@ architecture comportamento of muxGenerico4x1 is
     DATA_OUT  <=  IN_A when (SELECTOR = "00") else 
 				      IN_B when (SELECTOR = "01") else
 				      IN_C when (SELECTOR = "10") else
-				      IN_A;
+						IN_D;
 end architecture;

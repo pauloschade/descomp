@@ -19,9 +19,9 @@ entity bancoReg is
         ADDR_B       : in std_logic_vector((REG_ADDR_SIZE-1) downto 0);
         ADDR_C       : in std_logic_vector((REG_ADDR_SIZE-1) downto 0);
 --
-        DATA_WR    : in std_logic_vector((DATA_SIZE-1) downto 0);
+        DATA_WR      : in std_logic_vector((DATA_SIZE-1) downto 0);
 --
-        ENABLE_WR        : in std_logic := '0';
+        ENABLE_WR      : in std_logic;
         OUT_A          : out std_logic_vector((DATA_SIZE -1) downto 0);
         OUT_B          : out std_logic_vector((DATA_SIZE -1) downto 0)
     );

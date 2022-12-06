@@ -62,6 +62,8 @@ architecture arquitetura of Projeto2 is
 	-- IF -------------------------------------------------------------------------------------------------
 	signal pc_plus_4_if_out, pc_plus_4_if_id, pc_plus_4_id_ex, pc_plus_4_ex_mem, pc_plus_4_mem_wb : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal instruction_if_out, instruction_if_id : std_logic_vector(DATA_SIZE-1 downto 0);
+	
+	signal dout_reg_if_id : std_logic_vector((DATA_SIZE + DATA_SIZE-1) downto 0);
 	-------------------------------------------------------------------------------------------------------
 	-- ID -------------------------------------------------------------------------------------------------
 	signal control : std_logic_vector(CONTROL_SIZE-1 downto 0);
@@ -80,16 +82,30 @@ architecture arquitetura of Projeto2 is
 	signal wb_control_id_out, wb_control_id_ex, wb_control_ex_mem, wb_control_mem_wb : std_logic_vector(WB_CONTROL_SIZE-1 downto 0);
 	signal mem_control_id_out, mem_control_id_ex, mem_control_ex_mem : std_logic_vector(MEM_CONTROL_SIZE-1 downto 0);
 	signal ex_control_id_out, ex_control_id_ex : std_logic_vector(EX_CONTROL_SIZE-1 downto 0);
+	
+	constant reg_if_ex_size : natural := DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE + REG_ADDR_SIZE + ULA_SELECTOR_SIZE +
+		EX_CONTROL_SIZE + MEM_CONTROL_SIZE + WB_CONTROL_SIZE +
+		DATA_SIZE;
+		
+	signal dout_reg_if_ex :  std_logic_vector(reg_if_ex_size-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	-- EX --------------------------------------------------------------------------------------------------
 	signal pc_plus_sig_ex_out, pc_plus_sig_ex_mem : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal ula_zero_ex_out, ula_zero_ex_mem : std_logic;
 	signal ula_result_ex_out, ula_result_ex_mem, ula_result_mem_wb : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal reg_wr_addr_ex_out, reg_wr_addr_ex_mem, reg_wr_addr_mem_wb : std_logic_vector(REG_ADDR_SIZE-1 downto 0);
+	
+	constant reg_ex_mem_size : natural := DATA_SIZE + 1 + DATA_SIZE + REG_ADDR_SIZE + DATA_SIZE + 
+												 MEM_CONTROL_SIZE + WB_CONTROL_SIZE + DATA_SIZE + DATA_SIZE;
+	signal dout_reg_ex_mem :  std_logic_vector(reg_ex_mem_size-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	-- MEM -------------------------------------------------------------------------------------------------
 	signal ram_rd_data_mem_out, ram_rd_data_mem_wr : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal selector_branch : std_logic;
+	
+	constant reg_mem_wb_size : natural := WB_CONTROL_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + REG_ADDR_SIZE;
+	signal dout_reg_mem_wb :  std_logic_vector(reg_mem_wb_size-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	-- WB --------------------------------------------------------------------------------------------------
 	signal reg_wr_wb_out: std_logic_vector(DATA_SIZE-1 downto 0);
@@ -134,9 +150,17 @@ IF_PIPE : entity work.IF_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 				
 -----------------------------------------------------------------
 ------------ REG PIPE HERE ---------
-pc_plus_4_if_id <= pc_plus_4_if_out;
-instruction_if_id <= instruction_if_out;
+--pc_plus_4_if_id <= pc_plus_4_if_out;
+--instruction_if_id <= instruction_if_out;
+REG_IF_ID : entity work.registradorGenerico   generic map (DATA_SIZE => (DATA_SIZE + DATA_SIZE))
+	port map (
+				DIN => instruction_if_out & pc_plus_4_if_out, 
+				DOUT => dout_reg_if_id, 
+				ENABLE => '1', CLK => CLK
+				);
 ------------------------------------
+pc_plus_4_if_id <= dout_reg_if_id(DATA_SIZE-1 downto 0);
+instruction_if_id <= dout_reg_if_id(DATA_SIZE+DATA_SIZE-1 downto DATA_SIZE);
 -----------------------------------------------------------------
 ---
 imediato_jmp <= instruction_if_id(25 downto 0);
@@ -178,22 +202,132 @@ selector_jr <= CONTROL(12);
 
 
 ------------ REG PIPE HERE ---------
+--sig_ext_id_ex <= sig_ext_id_out;
+--sig_lui_id_ex <= sig_lui_id_out;
+--
+--data_r1_id_ex <= data_r1_id_out;
+--data_r2_id_ex <= data_r2_id_out;
+--rt_addr_id_ex <= rt_addr_id_out;
+--rd_addr_id_ex <= rd_addr_id_out;
+--
+--ula_op_id_ex <= ula_op_id_out;
+--
+--ex_control_id_ex <= ex_control_id_out;
+--mem_control_id_ex <= mem_control_id_out;
+--wb_control_id_ex <= wb_control_id_out;
 
-sig_ext_id_ex <= sig_ext_id_out;
-sig_lui_id_ex <= sig_lui_id_out;
+REG_ID_EX : entity work.registradorGenerico   generic map (DATA_SIZE => reg_if_ex_size)
+	port map 
+	(
+		DIN => 
+		(
+			pc_plus_4_if_id & wb_control_id_out &
+			mem_control_id_out & ex_control_id_out &
+			ula_op_id_out & rd_addr_id_out & 
+			rt_addr_id_out & data_r2_id_out &
+			data_r1_id_out & sig_lui_id_out &
+			sig_ext_id_out
+--			sig_ext_id_out & sig_lui_id_out &
+--			data_r1_id_out & data_r2_id_out &
+--			rt_addr_id_out & rd_addr_id_out &
+--			ula_op_id_out  & ex_control_id_out &
+--			mem_control_id_out & wb_control_id_out &
+--			pc_plus_4_if_id
+			
+		), 
+		DOUT => dout_reg_if_ex, 
+		ENABLE => '1', CLK => CLK
+	);
 
-data_r1_id_ex <= data_r1_id_out;
-data_r2_id_ex <= data_r2_id_out;
-rt_addr_id_ex <= rt_addr_id_out;
-rd_addr_id_ex <= rd_addr_id_out;
+pc_plus_4_id_ex <= dout_reg_if_ex(reg_if_ex_size-1 downto 
+		(
+		DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE + REG_ADDR_SIZE + ULA_SELECTOR_SIZE +
+		EX_CONTROL_SIZE + MEM_CONTROL_SIZE + WB_CONTROL_SIZE
+		)
+);
 
-ula_op_id_ex <= ula_op_id_out;
+wb_control_id_ex <= dout_reg_if_ex(reg_if_ex_size - DATA_SIZE - 1 downto 
+		(
+		DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE + REG_ADDR_SIZE + ULA_SELECTOR_SIZE +
+		EX_CONTROL_SIZE + MEM_CONTROL_SIZE
+		)
+);
 
-ex_control_id_ex <= ex_control_id_out;
-mem_control_id_ex <= mem_control_id_out;
-wb_control_id_ex <= wb_control_id_out;
+mem_control_id_ex <= dout_reg_if_ex(reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE -1 downto 
+		(
+		DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE + REG_ADDR_SIZE + ULA_SELECTOR_SIZE +
+		EX_CONTROL_SIZE
+		)
+);
 
-pc_plus_4_id_ex <= pc_plus_4_if_id;
+ex_control_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE -1 downto 
+		(
+		DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE + REG_ADDR_SIZE + ULA_SELECTOR_SIZE
+		)
+);
+
+ula_op_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE -1 downto
+		(
+		DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE + REG_ADDR_SIZE
+		)
+);
+
+rd_addr_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE - ULA_SELECTOR_SIZE - 
+		1 downto
+		(
+		DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE + 
+		REG_ADDR_SIZE
+		)
+);
+
+rt_addr_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE - ULA_SELECTOR_SIZE - REG_ADDR_SIZE -
+		1 downto (DATA_SIZE + DATA_SIZE + DATA_SIZE + DATA_SIZE)
+);
+
+data_r2_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE - ULA_SELECTOR_SIZE - REG_ADDR_SIZE -
+		REG_ADDR_SIZE - 1 downto (DATA_SIZE + DATA_SIZE + DATA_SIZE)
+);
+
+data_r1_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE - ULA_SELECTOR_SIZE - REG_ADDR_SIZE -
+		REG_ADDR_SIZE - DATA_SIZE - 1 downto (DATA_SIZE + DATA_SIZE)
+);
+
+sig_lui_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE - ULA_SELECTOR_SIZE - REG_ADDR_SIZE -
+		REG_ADDR_SIZE - DATA_SIZE - DATA_SIZE - 1 downto DATA_SIZE
+);
+
+sig_ext_id_ex <= dout_reg_if_ex
+		(
+		reg_if_ex_size - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE - 
+		EX_CONTROL_SIZE - ULA_SELECTOR_SIZE - REG_ADDR_SIZE -
+		REG_ADDR_SIZE - DATA_SIZE - DATA_SIZE - DATA_SIZE -1 downto 0
+);
+
 
 ------------------------------------
 ------------------------------------------------------------------
@@ -221,18 +355,98 @@ EX_PIPE : entity work.EX_PIPELINE generic map(DATA_SIZE => DATA_SIZE, CONTROL_SI
 				
 ------------------------------------------------------------------
 ------------ REG PIPE HERE ---------
-ula_result_ex_mem <= ula_result_ex_out;
-ula_zero_ex_mem <= ula_zero_ex_out;
-pc_plus_sig_ex_mem <= pc_plus_sig_ex_out;
-reg_wr_addr_ex_mem <= reg_wr_addr_ex_out;
+--ula_result_ex_mem <= ula_result_ex_out;
+--ula_zero_ex_mem <= ula_zero_ex_out;
+--pc_plus_sig_ex_mem <= pc_plus_sig_ex_out;
+--reg_wr_addr_ex_mem <= reg_wr_addr_ex_out;
+--
+--data_r2_ex_mem <= data_r2_id_ex;
+--
+--mem_control_ex_mem <= mem_control_id_ex;
+--wb_control_ex_mem <= wb_control_id_ex;
+--
+--pc_plus_4_ex_mem <= pc_plus_4_id_ex;
+--sig_lui_ex_mem <= sig_lui_id_ex;
 
-data_r2_ex_mem <= data_r2_id_ex;
 
-mem_control_ex_mem <= mem_control_id_ex;
-wb_control_ex_mem <= wb_control_id_ex;
+REG_EX_MEM : entity work.registradorGenerico   generic map (DATA_SIZE => reg_ex_mem_size)
+	port map 
+	(
+		DIN => 
+		(
+			sig_lui_id_ex & pc_plus_4_id_ex &
+			wb_control_id_ex & mem_control_id_ex &
+			data_r2_id_ex & reg_wr_addr_ex_out &
+			pc_plus_sig_ex_out & ula_result_ex_out &
+			ula_zero_ex_out
+--			ula_zero_ex_out & ula_result_ex_out & 
+--			pc_plus_sig_ex_out & reg_wr_addr_ex_out &
+--			data_r2_id_ex & mem_control_id_ex &
+--			wb_control_id_ex & pc_plus_4_id_ex &
+--			sig_lui_id_ex
 
-pc_plus_4_ex_mem <= pc_plus_4_id_ex;
-sig_lui_ex_mem <= sig_lui_id_ex;
+		), 
+		DOUT => dout_reg_ex_mem, 
+		ENABLE => '1', CLK => CLK
+	);
+	
+sig_lui_ex_mem <= dout_reg_ex_mem(reg_ex_mem_size-1 downto 
+		(
+		DATA_SIZE + 1 + DATA_SIZE + REG_ADDR_SIZE + DATA_SIZE + 
+		MEM_CONTROL_SIZE + WB_CONTROL_SIZE + DATA_SIZE
+		)
+);
+
+pc_plus_4_ex_mem <= dout_reg_ex_mem(reg_ex_mem_size - DATA_SIZE -1 downto 
+		(
+		DATA_SIZE + 1 + DATA_SIZE + REG_ADDR_SIZE + DATA_SIZE + 
+		MEM_CONTROL_SIZE + WB_CONTROL_SIZE
+		)
+);
+
+wb_control_ex_mem <= dout_reg_ex_mem(reg_ex_mem_size - DATA_SIZE - DATA_SIZE -1 downto 
+		(
+		DATA_SIZE + 1 + DATA_SIZE + REG_ADDR_SIZE + DATA_SIZE + 
+		MEM_CONTROL_SIZE
+		)
+);
+
+mem_control_ex_mem <= dout_reg_ex_mem(reg_ex_mem_size - DATA_SIZE - DATA_SIZE - WB_CONTROL_SIZE -1 downto 
+		(
+		DATA_SIZE + 1 + DATA_SIZE + REG_ADDR_SIZE + DATA_SIZE
+		)
+);
+
+data_r2_ex_mem <= dout_reg_ex_mem(
+		(
+		reg_ex_mem_size - DATA_SIZE - DATA_SIZE - WB_CONTROL_SIZE - MEM_CONTROL_SIZE -1 
+		) downto (DATA_SIZE + 1 + DATA_SIZE + REG_ADDR_SIZE)
+);
+
+reg_wr_addr_ex_mem <= dout_reg_ex_mem(
+		(
+		reg_ex_mem_size - DATA_SIZE - DATA_SIZE - 
+		WB_CONTROL_SIZE - MEM_CONTROL_SIZE - DATA_SIZE -1 
+		) downto (DATA_SIZE + 1 + DATA_SIZE)
+);
+
+pc_plus_sig_ex_mem <= dout_reg_ex_mem(
+		(
+		reg_ex_mem_size - DATA_SIZE - DATA_SIZE - 
+		WB_CONTROL_SIZE - MEM_CONTROL_SIZE - DATA_SIZE - REG_ADDR_SIZE -1 
+		) downto (DATA_SIZE + 1)
+);
+
+ula_result_ex_mem <= dout_reg_ex_mem(
+		(
+		reg_ex_mem_size - DATA_SIZE - DATA_SIZE - 
+		WB_CONTROL_SIZE - MEM_CONTROL_SIZE - DATA_SIZE - 
+		REG_ADDR_SIZE - DATA_SIZE -1
+		) downto 1
+);
+
+ula_zero_ex_mem <= dout_reg_ex_mem(0);
+
 ------------------------------------
 ------------------------------------------------------------------
 
@@ -252,15 +466,59 @@ MEM_PIPE : entity work.MEM_PIPELINE generic map(DATA_SIZE => DATA_SIZE, CONTROL_
 				
 ------------------------------------------------------------------
 ------------ REG PIPE HERE ---------
-wb_control_mem_wb <= wb_control_ex_mem;
+--wb_control_mem_wb <= wb_control_ex_mem;
+--
+--ula_result_mem_wb <= ula_result_ex_mem;
+--ram_rd_data_mem_wr <= ram_rd_data_mem_out;
+--pc_plus_4_mem_wb <= pc_plus_4_ex_mem;
+--sig_lui_mem_wb <= sig_lui_ex_mem;
 
-ula_result_mem_wb <= ula_result_ex_mem;
-ram_rd_data_mem_wr <= ram_rd_data_mem_out;
-pc_plus_4_mem_wb <= pc_plus_4_ex_mem;
-sig_lui_mem_wb <= sig_lui_ex_mem;
--- LUI
+-- reg_wr_addr_mem_wb <= reg_wr_addr_ex_mem;
 
-reg_wr_addr_mem_wb <= reg_wr_addr_ex_mem;
+REG_MEM_WB : entity work.registradorGenerico   generic map (DATA_SIZE => reg_mem_wb_size)
+	port map 
+	(
+		DIN => 
+		(
+		reg_wr_addr_ex_mem & sig_lui_ex_mem &
+		pc_plus_4_ex_mem & ram_rd_data_mem_out &
+		ula_result_ex_mem & wb_control_ex_mem
+		), 
+		DOUT => dout_reg_mem_wb, 
+		ENABLE => '1', CLK => CLK
+	);
+	
+reg_wr_addr_mem_wb <= dout_reg_mem_wb(reg_mem_wb_size -1 downto
+			(
+			WB_CONTROL_SIZE + DATA_SIZE + DATA_SIZE +
+			DATA_SIZE + DATA_SIZE
+			)
+	);
+	
+sig_lui_mem_wb <= dout_reg_mem_wb(reg_mem_wb_size - REG_ADDR_SIZE -1 downto
+			(
+			WB_CONTROL_SIZE + DATA_SIZE + DATA_SIZE +
+			DATA_SIZE
+			)
+	);
+	
+pc_plus_4_mem_wb <= dout_reg_mem_wb(reg_mem_wb_size - REG_ADDR_SIZE - DATA_SIZE -1 downto
+			(
+			WB_CONTROL_SIZE + DATA_SIZE + DATA_SIZE
+			)
+	);
+	
+ram_rd_data_mem_wr <= dout_reg_mem_wb(reg_mem_wb_size - REG_ADDR_SIZE - DATA_SIZE - DATA_SIZE -1 downto
+			(
+			WB_CONTROL_SIZE + DATA_SIZE
+			)
+	);
+	
+ula_result_mem_wb <= dout_reg_mem_wb(reg_mem_wb_size - REG_ADDR_SIZE - DATA_SIZE - DATA_SIZE - DATA_SIZE -1 downto WB_CONTROL_SIZE);
+	
+wb_control_mem_wb <= dout_reg_mem_wb(reg_mem_wb_size - REG_ADDR_SIZE - DATA_SIZE - DATA_SIZE - DATA_SIZE - DATA_SIZE -1 downto 0);
+
+
 ------------------------------------
 ------------------------------------------------------------------
 
@@ -279,11 +537,14 @@ WB_PIPE : entity work.WB_PIPELINE generic map(DATA_SIZE => DATA_SIZE, IMEDIATO_S
 				);
 
 
-MUX_TEST : entity work.generic_MUX_2x1 generic map(DATA_SIZE => DATA_SIZE)
-				port map(IN_A => pc_curr, IN_B => ula_result_mem_wb, MUX_SELECTOR => SW(SW_N-1) ,DATA_OUT => signal_teste);
+MUX_TEST : entity work.muxGenerico4x1 generic map(DATA_SIZE => DATA_SIZE)
+				port map(IN_A => pc_curr, IN_B => pc_plus_4_id_ex, IN_C => ula_result_ex_out, IN_D => reg_wr_wb_out , SELECTOR => SW(SW_N-1 downto SW_N-2) ,DATA_OUT => signal_teste);
 				
 HEX_LED : entity work.displaysController generic map (DATA_SIZE => DATA_SIZE)
 				port map(DATA_IN => signal_teste, HEX0 => HEX0, HEX1 => HEX1, HEX2 => HEX2, HEX3 => HEX3, HEX4 => HEX4, HEX5 => HEX5, LED_0_3 => LEDR(3 downto 0), LED_4_7 => LEDR(7 downto 4));
+				
+LEDR(8) <= wb_control_mem_wb(2);
+LEDR(9) <= ula_zero_ex_out;
 
 end architecture;
 				

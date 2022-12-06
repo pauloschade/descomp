@@ -61,10 +61,10 @@ begin
     end process;
     -- Se endereco = 0 : retorna ZERO
     OUT_B <= zero when to_integer(unsigned(ADDR_B)) = to_integer(unsigned(zero)) else
-				 DATA_WR when (ADDR_C = ADDR_B) else
+				 DATA_WR when (ADDR_C = ADDR_B and ENABLE_WR = '1') else
 				 registrador(to_integer(unsigned(ADDR_B)));
 				 
     OUT_A <= zero when to_integer(unsigned(ADDR_A)) = to_integer(unsigned(zero)) else
-				 DATA_WR when (ADDR_C = ADDR_A) else
+				 DATA_WR when (ADDR_C = ADDR_A and ENABLE_WR = '1') else
 				 registrador(to_integer(unsigned(ADDR_A)));
 end architecture;

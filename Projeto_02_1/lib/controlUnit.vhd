@@ -68,7 +68,7 @@ architecture comportamento of controlUnit is
    
   mux_rt_imediato <= '0' when (OPCODE = IS_ZERO) or (OPCODE = BEQ) or (OPCODE = BNE) else '1';
   
-  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO) or (OPCODE = ORI) 
+  enable_wr_reg <= '1' when (OPCODE = LW) or (OPCODE = IS_ZERO and not(FUNC = JR)) or (OPCODE = ORI) 
 								or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI) 
 								or (OPCODE = JAL)  or (OPCODE = LUI)
 				  else '0';

@@ -24,9 +24,11 @@ entity Projeto2 is
 	 simulacao : boolean := FALSE -- para gravar na placa, altere de TRUE para FALSE
   );
   port   (
-    CLOCK_50 : in std_logic;
+
+     CLOCK_50 : in std_logic;
 	 KEY_IN : in std_logic;
-	 ------------------ FPGA -----------------------------
+	 ------------------ COMPONENTES ------------------
+	  ------------------ DA FPGA ------------------
 	 HEX0 : out std_logic_vector(HEX_SIZE-1 downto 0); 
 	 HEX1 : out std_logic_vector(HEX_SIZE-1 downto 0);
 	 HEX2 : out std_logic_vector(HEX_SIZE-1 downto 0); 
@@ -60,12 +62,16 @@ architecture arquitetura of Projeto2 is
 	signal CLK : std_logic;
 	
 	-- IF -------------------------------------------------------------------------------------------------
+	-- Instruction Fetch (IF): busca da próxima instrução, na memória de programa, a ser executada;
+
 	signal pc_plus_4_if_out, pc_plus_4_if_id, pc_plus_4_id_ex, pc_plus_4_ex_mem, pc_plus_4_mem_wb : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal instruction_if_out, instruction_if_id : std_logic_vector(DATA_SIZE-1 downto 0);
 	
 	signal dout_reg_if_id : std_logic_vector((DATA_SIZE + DATA_SIZE-1) downto 0);
 	-------------------------------------------------------------------------------------------------------
 	-- ID -------------------------------------------------------------------------------------------------
+	-- Instruction Decode (ID): decodifica a instrução (UC) e faz a leitura dos registradores utilizados pela instrução;
+
 	signal control : std_logic_vector(CONTROL_SIZE-1 downto 0);
 	signal ula_op_id_out, ula_op_id_ex : std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
 	signal data_r1_id_out, data_r1_id_ex : std_logic_vector(DATA_SIZE-1 downto 0);
@@ -91,6 +97,9 @@ architecture arquitetura of Projeto2 is
 	signal dout_reg_if_ex :  std_logic_vector(reg_if_ex_size-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	-- EX --------------------------------------------------------------------------------------------------
+
+	-- Execute (EX): executa a operação definida pela instrução. É sempre feita na ULA;
+
 	signal pc_plus_sig_ex_out, pc_plus_sig_ex_mem : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal ula_zero_ex_out, ula_zero_ex_mem : std_logic;
 	signal ula_result_ex_out, ula_result_ex_mem, ula_result_mem_wb : std_logic_vector(DATA_SIZE-1 downto 0);
@@ -101,6 +110,9 @@ architecture arquitetura of Projeto2 is
 	signal dout_reg_ex_mem :  std_logic_vector(reg_ex_mem_size-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	-- MEM -------------------------------------------------------------------------------------------------
+
+	-- Memory Acess (MEM): lê a memória ou escreve o resultado da execução na memória RAM;
+
 	signal ram_rd_data_mem_out, ram_rd_data_mem_wr : std_logic_vector(DATA_SIZE-1 downto 0);
 	signal selector_branch : std_logic;
 	
@@ -108,6 +120,9 @@ architecture arquitetura of Projeto2 is
 	signal dout_reg_mem_wb :  std_logic_vector(reg_mem_wb_size-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	-- WB --------------------------------------------------------------------------------------------------
+
+	-- Write Back (WB): escreve o resultado da execução no registrador de destino;
+
 	signal reg_wr_wb_out: std_logic_vector(DATA_SIZE-1 downto 0);
 	--------------------------------------------------------------------------------------------------------
 	

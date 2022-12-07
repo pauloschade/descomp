@@ -6,9 +6,12 @@ entity ULA32 is
           IN_B : in std_logic;
           CARRYIN : in std_logic;
           SLT : in std_logic;
+          
+          INV_A : in std_logic;
           INV_B : in std_logic;
 
-          SELECTOR: in std_logic_vector (1 downto 0);
+          SELECTOR_A: in std_logic_vector (1 downto 0);
+          SELECTOR_B: in std_logic_vector (1 downto 0);
 
           RESULT : out std_logic;
 			 OVERFLOW : out std_logic;
@@ -23,6 +26,7 @@ architecture Behavioral of ULA32 is
     
     begin
 
+
         -- Invert
         MUX2x1 :  entity work.MUX2x1
         port map( 
@@ -30,6 +34,16 @@ architecture Behavioral of ULA32 is
             IN_B =>  not IN_B,
             SELECTOR => INV_B,
             DATA_OUT => inv_out);
+        
+        -- Invert A
+        MUX2x1 :  entity work.MUX2x1
+        port map( 
+            IN_A => not IN_A,
+            IN_B =>  IN_A,
+            SELECTOR_A => INV_A,
+            DATA_OUT => inv_out);
+
+
  
         -- Multiplex OP
         MUX4x1 :  entity work.MUX4x1
@@ -56,6 +70,6 @@ architecture Behavioral of ULA32 is
         sig_overflow <= (CARRYIN xor CARRYOUT);
         RESULT <= (sig_overflow xor sum_out);
 		  
-		  OVERFLOW <= sig_overflow;
+		OVERFLOW <= sig_overflow;
 
 end architecture;

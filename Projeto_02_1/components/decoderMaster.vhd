@@ -14,7 +14,7 @@ entity decoderMaster is
 			OPCODE : in std_logic_vector(OPCODE_SIZE-1 downto 0);
 			FUNC : in std_logic_vector(FUNC_SIZE-1 downto 0);
 			CONTROL_DATA : out std_logic_vector(CONTROL_SIZE-1 downto 0);
-         ULA_OP : out std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0)
+         	ULA_OP : out std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0)
   );
 end entity;
 

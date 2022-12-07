@@ -10,7 +10,7 @@ entity decoder_func_ULA is
   );
   port ( 
 			FUNC : in std_logic_vector(FUNC_SIZE-1 downto 0);
-         DATA_OUT : out std_logic_vector(DATA_SIZE-1 downto 0)
+      DATA_OUT : out std_logic_vector(DATA_SIZE-1 downto 0)
   );
 end entity;
 
@@ -30,6 +30,11 @@ architecture comportamento of decoder_func_ULA is
   constant OR_R  : std_logic_vector(FUNC_SIZE-1 downto 0) := "100101";
   constant SLT  : std_logic_vector(FUNC_SIZE-1 downto 0)  := "101010";
   
+------------------------------------------------------------------------------
+  -- AQUI 
+  constant NOR_R   : std_logic_vector(FUNC_SIZE-1 downto 0) := "100111";
+
+
   begin
   
   DATA_OUT <= ADD_ULA when (FUNC = ADD) else 
@@ -37,6 +42,10 @@ architecture comportamento of decoder_func_ULA is
 				  AND_ULA when (FUNC = AND_R) else
 				  OR_ULA when  (FUNC = OR_R) else
 				  SLT_ULA when (FUNC = SLT) else
+
+          -- AQUI
+          NOR_ULA when (FUNC = NOR_R) else
+
 				  "0000";
   
 end architecture;

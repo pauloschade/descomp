@@ -1,6 +1,15 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- VE SE FAZ O PULO D0 BEQ OU DO BNE - BRANCH
+
+-- ACESSA OS DADOS NA MEMORIA, COM LW OU SW
+
+-- SAEM ALGUNS PONTOS PRO WB
+
+-- FORWARD DO ENDEREÇO DE ESCRITA DE REGISTRADOR PARA REGISTRADOR
+
+
 entity MEM_PIPELINE is
   -- Total de bits das entradas e saidas
   generic (
@@ -23,6 +32,7 @@ entity MEM_PIPELINE is
 --	 RD_RAM : in std_logic;
 	 CONTROL : in std_logic_vector(CONTROL_SIZE-1 downto 0);
 	 
+	 -- FLAG ZERO DA ULA
 	 ZERO_ULA : in std_logic;
 	 ULA_RESULT : in std_logic_vector(DATA_SIZE-1 downto 0);
 	 

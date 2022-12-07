@@ -1,5 +1,3 @@
-
-
 library ieee;
 use ieee.std_logic_1164.all;
 
@@ -10,13 +8,15 @@ entity decoder_opcode_ULA is
   );
   port ( 
 			OPCODE : in std_logic_vector(OPCODE_SIZE-1 downto 0);
-         DATA_OUT : out std_logic_vector(DATA_SIZE-1 downto 0)
+      DATA_OUT : out std_logic_vector(DATA_SIZE-1 downto 0)
   );
 end entity;
 
 architecture comportamento of decoder_opcode_ULA is
 
   -- ULA
+  constant NOR_ULA  : std_logic_vector(DATA_SIZE-1 downto 0)  := "0000";
+  
   constant AND_ULA  : std_logic_vector(DATA_SIZE-1 downto 0)  := "0000";
   constant OR_ULA  : std_logic_vector(DATA_SIZE-1 downto 0)   := "0001";
   constant ADD_ULA : std_logic_vector(DATA_SIZE-1 downto 0)   := "0010";
@@ -35,11 +35,12 @@ architecture comportamento of decoder_opcode_ULA is
   
   begin
   
-  DATA_OUT <= AND_ULA when (OPCODE = ANDI) else
-				  OR_ULA  when (OPCODE = ORI)  else
+  DATA_OUT <= AND_ULA when (OPCODE = ANDI) OR (OPCODE = NOR_ULA) else
+				  OR_ULA  when (OPCODE = ORI) else
 				  ADD_ULA when (OPCODE = LW) or (OPCODE = SW) or (OPCODE = ADDI) else 
 				  SUB_ULA when (OPCODE = BEQ) or (OPCODE = BNE) else
 				  SLT_ULA when (OPCODE = SLTI) else
-				  "0000";
+				  
+          "0000";
   
 end architecture;

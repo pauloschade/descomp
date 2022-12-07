@@ -2,11 +2,23 @@ library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
 
+
+-- ENTRAM OS PONTOS DE CONTROLE
+-- OPERACOES DA ULA VEM DO PONTO DE CONTROLE
+-- ULA OP
+-- ULA CTRL NAO FAZ NADA NO NOSSO CASO
+
+-- SINAL ESTENDIDO SHIFTADO É SOMADO COM PC+4
+
+-- MUX ESCOLHE A ENTRADA B DA ULA - RT OU IMEDIATO
+
+-- MUX QUE ESCOLHE O REG DE DESTINO- RT, RD OU 31 PARA JAL
+
 entity EX_PIPELINE is
   -- Total de bits das entradas e saidas
   generic (
-  	 DATA_SIZE : natural := 32;
-	 REG_ADDR_SIZE : natural := 5;
+  	 DATA_SIZE : natural := 32; -- 32 bits padrao
+	 REG_ADDR_SIZE : natural := 5; -- 5 bits para endereço do registrador
 	 CONTROL_SIZE : natural := 2;
 	 OPCODE_SIZE : natural := 6;
 	 ULA_SELECTOR_SIZE : natural := 4;
@@ -16,15 +28,19 @@ entity EX_PIPELINE is
   );
   port   (
 	 CLK : in std_logic;
+
 	 --	GENERAL
 	 PC_PLUS_4 : in std_logic_vector(DATA_SIZE-1 downto 0);
+
 	 --	ID
 --	 SELECTOR_R3 : in std_logic_vector(1 downto 0);
 --	 SELECTOR_RT_OR_IMEDIATO : in std_logic;
 	 CONTROL : in std_logic_vector(CONTROL_SIZE-1 downto 0);
 	 
+	 --	OPERACOES DA ULA VEM DO PONTO DE CONTROLE
 	 ULA_OP : in std_logic_vector(ULA_SELECTOR_SIZE-1 downto 0);
 	 
+	 -- DADOS QUE VEM DA LEITURA DO BANCO DE REGISTRADORES
 	 -- REGS
 	 SIG_EXT : in std_logic_vector(DATA_SIZE-1 downto 0);
 	 DATA_R1 : in std_logic_vector(DATA_SIZE-1 downto 0);
@@ -60,15 +76,23 @@ begin
 SOMADOR :  entity work.somadorGenerico  generic map (DATA_SIZE => DATA_SIZE)
 	port map( IN_A => PC_PLUS_4, IN_B => sig_ext_shifted, DATA_OUT => SIG_EXT_PLUS_PC);
 
+-- MUX QUE ESCOLHE A ENTRADA B DA ULA - RT (REGISTRADOR LIDO) OU IMEDIATO
+-- O SELETOR ESCOLHE ENTRE 0(RT) OU 1(IMEDIATO)
 MUX_RT_OR_IMEDIATO : entity work.generic_MUX_2x1  generic map (DATA_SIZE => DATA_SIZE)
 	port map ( IN_A => DATA_R2, IN_B => SIG_EXT, MUX_SELECTOR => selector_rt_or_imediato, DATA_OUT => rt_or_imediato );
-	
+
+
+--- AQUI
+
+-- ULA EXECUTA A OPERACAO
 ULA : entity work.ULASomaSub  generic map(DATA_SIZE => DATA_SIZE, SELECTOR_SIZE => ULA_SELECTOR_SIZE)
           port map (IN_A => DATA_R1, IN_B => rt_or_imediato, SELECTOR => ULA_OP, FLAG_Z => ZERO_ULA ,DATA_OUT => ULA_RESULT);
 
+-- SELECIONA ENTRE RT, RD OU 31 PARA JAL
 MUX_RT_RD_JAL : entity work.muxGenerico4x1  generic map (DATA_SIZE => REG_ADDR_SIZE)
 	port map ( IN_A => ADDR_RT, IN_B => ADDR_RD, IN_C => 5x"1F", IN_D => 5x"00", SELECTOR => selector_r3, DATA_OUT => WB_ADDR_REG );
 
+-- SHIFTA 2 BITS PARA A ESQUERDA
 sig_ext_shifted <= std_logic_vector(shift_left(unsigned(SIG_EXT), 2));
 
 selector_r3 <= CONTROL(1 downto 0);

@@ -6,9 +6,14 @@ entity ULA1TO31 is
           IN_B : in std_logic;
           CARRYIN : in std_logic;
           SLT : in std_logic;
-          INV_B : in std_logic;
 
-          SELECTOR: in std_logic_vector (1 downto 0);
+          INV_B : in std_logic;
+          SELECTOR_B: in std_logic_vector (1 downto 0);
+
+          -- AQUI
+          INV_A : in std_logic;
+          SELECTOR_A: in std_logic_vector (1 downto 0);
+
 
           RESULT : out std_logic;
           CARRYOUT : out std_logic);
@@ -21,14 +26,31 @@ architecture Behavioral of ULA1TO31 is
     
     begin
 
-        -- Invert
+        -- Invert B
         MUX2x1 :  entity work.MUX2x1
         port map( 
             IN_A => IN_B,
             IN_B =>  not IN_B,
+            
             SELECTOR => INV_B,
+
             DATA_OUT => inv_out);
  
+
+        -- Invert A
+        MUX2x1 :  entity work.MUX2x1
+        port map( 
+            IN_A => not IN_A,
+            IN_B => IN_A,
+            
+            -- SE O SELETOR ESTIVER NO INV A VOU INVERTER O A
+            SELECTOR => INV_A,
+            DATA_OUT => inv_out);
+ 
+
+
+
+
         -- Multiplex OP
         MUX4x1 :  entity work.MUX4x1
         port map( 

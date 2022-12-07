@@ -6,13 +6,19 @@ entity ULA_MIPS is
     generic (DATA_SIZE: NATURAL := 32);
     port (IN_A: in std_logic_vector((DATA_SIZE-1) downto 0);
           IN_B: in std_logic_vector((DATA_SIZE-1) downto 0);
-          INV_B: in std_logic;
           
-          SELECTOR: in std_logic_vector (1 downto 0);
+          
+          INV_B: in std_logic;
+          SELECTOR_B: in std_logic_vector (1 downto 0);
+        
+
+          INV_A: in std_logic;
+          SELECTOR_A: in std_logic_vector (1 downto 0);
+          
 
           DATA_OUT : out std_logic_vector((DATA_SIZE-1) downto 0);
 			 
-			 OVERFLOW : out std_logic;
+		  OVERFLOW : out std_logic;
 			 
           ZERO_FLAG : out std_logic
           );
@@ -35,8 +41,13 @@ architecture Behavioral of ULA_MIPS is
                 IN_B=> IN_B(0),
                 CARRYIN => INV_B,
                 SLT => slt, 
+                
+                INV_A=> INV_A,
                 INV_B=> INV_B,
-                SELECTOR => SELECTOR,
+                
+                SELECTOR_A => SELECTOR_A,
+                SELECTOR_B => SELECTOR_B,
+
                 RESULT => DATA_OUT(0),
                 CARRYOUT => carry0
             );
@@ -408,9 +419,11 @@ architecture Behavioral of ULA_MIPS is
                 CARRYIN => carry30,
                 SLT => '0', 
                 INV_B=> INV_B,
+                
                 SELECTOR => SELECTOR,
+                
                 DATA_OUT => DATA_OUT(31),
-					 OVERFLOW => OVERFLOW,
+				OVERFLOW => OVERFLOW,
                 RESULT => slt
             );
 

@@ -20,6 +20,7 @@ architecture comportamento of controlUnit is
 
   ------ ALL ZERO
   constant IS_ZERO  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "000000";
+
   
   constant LW  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "100011";
   constant SW  : std_logic_vector(OPCODE_SIZE-1 downto 0) := "101011";
@@ -38,7 +39,16 @@ architecture comportamento of controlUnit is
   
   constant JR : std_logic_vector(OPCODE_SIZE-1 downto 0) := "001000";
   
-  
+
+
+
+-------------------------------------------------------------------------
+  constant NORI: std_logic_vector(OPCODE_SIZE-1 downto 0) := "100111";
+-------------------------------------------------------------------------
+
+
+
+
   alias enable_wr_ram : std_logic is DATA_OUT(0);
   alias enable_rd_ram : std_logic is DATA_OUT(1);
   alias bne_or_beq : std_logic is DATA_OUT(2);
@@ -61,7 +71,7 @@ architecture comportamento of controlUnit is
   
   beqs <= '1' when (OPCODE = BEQ) else '0';
   
-  mux_ula_mem <= "00" when (OPCODE = IS_ZERO) or (OPCODE = ORI) or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI)  else
+  mux_ula_mem <= "00" when (OPCODE = IS_ZERO) or (OPCODE = ORI) or (OPCODE = NORI) or (OPCODE = ANDI) or (OPCODE = ADDI) or (OPCODE = SLTI)  else
 					  "10" when (OPCODE = JAL) else
 					  "11" when (OPCODE = LUI) else
 					  "01";
@@ -73,7 +83,7 @@ architecture comportamento of controlUnit is
 								or (OPCODE = JAL)  or (OPCODE = LUI)
 				  else '0';
   
-  ori_andi <= '1' when (OPCODE = ORI) or (OPCODE = ANDI) else '0';
+  ori_andi <= '1' when (OPCODE = ORI) or (OPCODE = ANDI) or (OPCODE = NORI) else '0';
 						 
   mux_r3 <= "10" when (OPCODE = JAL) or (FUNC = JR and OPCODE = IS_ZERO) else
 				"01" when (OPCODE = IS_ZERO) else 
